@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order A4 Documents - Disha Digital Prints</title>
+    <meta name="description" content="Upload and configure your A4 documents for printing. Choose color, paper quality, binding options and get instant pricing. Fast turnaround time.">
+    <meta name="keywords" content="A4 document printing, document print online, color printing, black and white printing, binding services, spiral binding, staple binding">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dishaprints.com/order-documents.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dishaprints.com/order-documents.html">
+    <meta property="og:title" content="Order A4 Documents - Professional Printing Services">
+    <meta property="og:description" content="Upload your documents for high-quality printing. Multiple binding and paper options available.">
+    <meta property="og:image" content="https://dishaprints.com/images/og-documents.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="A4 Document Printing - Disha Prints">
+    <meta name="twitter:description" content="Professional document printing with binding options.">
+    
+    <!-- Structured Data for Product -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "A4 Document Printing",
+      "description": "Professional A4 document printing with color/B&W options and multiple binding choices",
+      "brand": {
+        "@type": "Brand",
+        "name": "Disha Digital Prints"
+      },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "INR",
+        "lowPrice": "2",
+        "highPrice": "10",
+        "priceValidUntil": "2025-12-31"
+      }
+    }
+    </script>
+    
+    <!-- Tailwind CSS with Custom Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neutral: {
+                            0: '#FFFFFF', 50: '#F9FAFB', 100: '#F2F4F7', 200: '#E5E7EB',
+                            300: '#D1D5DB', 400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563',
+                            700: '#374151', 800: '#1F2937', 900: '#111827'
+                        },
+                        primary: {
+                            50: '#EEF6FF', 100: '#D9ECFF', 200: '#B7D7FF', 300: '#8ABEFF',
+                            400: '#5AA3FF', 500: '#2F85FF', 600: '#1E6CE0', 700: '#1554B3',
+                            800: '#0E3D86', 900: '#082858'
+                        },
+                        accentA: { 100: '#EAFBF1', 300: '#7ADFA6', 500: '#22C55E', 600: '#16A34A', 700: '#16A34A' },
+                        accentB: { 100: '#FFF4E5', 300: '#FFC275', 500: '#FB923C', 700: '#EA580C' },
+                        danger: { 100: '#FEECEC', 300: '#F68A8A', 500: '#EF4444', 700: '#DC2626' },
+                        info: { 100: '#E8F5FF', 300: '#7CC5FF', 500: '#3B82F6', 700: '#2563EB' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+                    },
+                    spacing: {
+                        '1': '2px', '2': '4px', '3': '8px', '4': '12px', '5': '16px',
+                        '6': '20px', '7': '24px', '8': '32px', '9': '40px', '10': '48px'
+                    },
+                    borderRadius: {
+                        'xs': '6px', 'sm': '8px', 'md': '12px', 'lg': '16px', 'xl': '24px'
+                    },
+                    boxShadow: {
+                        'xs': '0 1px 2px rgba(16,24,40,0.06)',
+                        'sm': '0 2px 6px rgba(16,24,40,0.08)',
+                        'md': '0 8px 24px rgba(16,24,40,0.10)',
+                        'lg': '0 12px 32px rgba(16,24,40,0.12)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body class="bg-neutral-50 text-neutral-900 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6 sm:px-7">
+            <div class="flex items-center justify-between py-4">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center group-hover:bg-primary-700 transition-colors duration-200">
+                        <i class="fas fa-print text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-neutral-900">Disha Digital Prints</h1>
+                        <p class="text-xs text-neutral-600">Print Anything, Anytime</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav id="header-nav" class="hidden lg:flex items-center gap-7">
+                    <!-- Navigation populated by header-auth.js -->
+                </nav>
+
+                <!-- Right Section -->
+                <div id="user-actions" class="flex items-center gap-4">
+                    <!-- User actions populated by header-auth.js -->
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden text-neutral-700 p-2" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-neutral-200 bg-white">
+            <nav id="mobile-nav" class="max-w-screen-xl mx-auto px-6 py-4 space-y-3">
+                <!-- Mobile menu populated by header-auth.js -->
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-screen-xl mx-auto px-6 sm:px-7 py-9">
+        
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <ol class="flex items-center gap-2 text-sm text-neutral-600">
+                <li><a href="index.html" class="hover:text-primary-600 transition-colors">Home</a></li>
+                <li><i class="fas fa-chevron-right text-xs"></i></li>
+                <li><a href="order.html" class="hover:text-primary-600 transition-colors">Order</a></li>
+                <li><i class="fas fa-chevron-right text-xs"></i></li>
+                <li class="text-neutral-900 font-medium">A4 Documents</li>
+            </ol>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="text-center mb-9">
+            <div class="w-16 h-16 bg-primary-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-file-alt text-primary-600 text-3xl"></i>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-neutral-900 mb-3">
+                A4 Document Printing
+            </h1>
+            <p class="text-base text-neutral-600 max-w-2xl mx-auto">
+                Upload your documents and configure your printing preferences. We support PDF, DOC, DOCX, JPG, and PNG files.
+            </p>
+        </div>
+
+        <!-- File Upload Section -->
+        <section id="upload-section" class="mb-9 max-w-5xl mx-auto">
+            <div class="border-2 border-dashed border-neutral-300 rounded-lg p-16 text-center hover:border-primary-300 transition-all duration-200 cursor-pointer bg-white hover:bg-primary-50" id="dropzone">
+                <i class="fas fa-cloud-upload-alt text-7xl text-neutral-400 mb-6"></i>
+                <p class="text-lg text-primary-600 font-medium mb-2">
+                    <span class="underline cursor-pointer" id="click-upload">Click to upload</span> or drag and drop
+                </p>
+                <p class="text-sm text-neutral-600 mt-2">
+                    PDF, JPG, PNG, DOC, DOCX (Max 50MB per file)
+                </p>
+                <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+            </div>
+        </section>
+
+        <!-- Configuration Section (Hidden Initially) -->
+        <section id="configuration-section" class="hidden mb-9">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-7">
+                
+                <!-- Left Column: Configuration Options -->
+                <div class="lg:col-span-3">
+                    <div class="bg-white rounded-lg shadow-sm p-8 border border-neutral-200">
+                        <h2 class="text-xl font-semibold text-neutral-900 mb-7">Configure Your Documents</h2>
+                        
+                        <!-- Uploaded Files List -->
+                        <div id="uploaded-files-list" class="mb-7">
+                            <!-- Files will be dynamically inserted here -->
+                        </div>
+                        
+                        <h3 class="text-base font-medium text-neutral-900 mb-4">Print Options</h3>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <!-- Paper Size -->
+                            <div>
+                                <label class="block text-xs font-medium text-neutral-700 mb-2">Paper Size</label>
+                                <select id="paper-size" class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all duration-200">
+                                    <option value="a4">A4 (210 × 297 mm)</option>
+                                    <option value="a3">A3 (297 × 420 mm)</option>
+                                    <option value="letter">Letter (8.5 × 11 in)</option>
+                                    <option value="legal">Legal (8.5 × 14 in)</option>
+                                </select>
+                            </div>
+
+                            <!-- Color Mode -->
+                            <div>
+                                <label class="block text-xs font-medium text-neutral-700 mb-2">Color Mode</label>
+                                <select id="color-mode" class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all duration-200">
+                                    <option value="bw">Black & White</option>
+                                    <option value="color">Color (+50%)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Sides -->
+                            <div>
+                                <label class="block text-xs font-medium text-neutral-700 mb-2">Print Sides</label>
+                                <select id="print-sides" class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all duration-200">
+                                    <option value="single">Single-Sided</option>
+                                    <option value="double">Double-Sided</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Paper Quality -->
+                            <div>
+                                <label class="block text-xs font-medium text-neutral-700 mb-2">Paper Quality</label>
+                                <select id="paper-quality" class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all duration-200">
+                                    <option value="70gsm">70 GSM (Standard)</option>
+                                    <option value="80gsm">80 GSM (+₹0.50/page)</option>
+                                    <option value="120gsm">120 GSM (+₹1/page)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-base font-medium text-neutral-900 mb-4">Binding</h3>
+                        <div class="space-y-3 mb-6">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="binding" value="none" checked class="w-4 h-4 text-primary-600 focus:ring-primary-300">
+                                <span class="text-sm text-neutral-800">None - Loose Pages</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="binding" value="spiral" class="w-4 h-4 text-primary-600 focus:ring-primary-300">
+                                <span class="text-sm text-neutral-800">Spiral Binding (+₹10)</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="binding" value="perfect" class="w-4 h-4 text-primary-600 focus:ring-primary-300">
+                                <span class="text-sm text-neutral-800">Perfect Binding (+₹25)</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="binding" value="wiro" class="w-4 h-4 text-primary-600 focus:ring-primary-300">
+                                <span class="text-sm text-neutral-800">Wiro Binding (+₹15)</span>
+                            </label>
+                        </div>
+                        
+                        <h3 class="text-base font-medium text-neutral-900 mb-4">Quantity</h3>
+                        <div class="flex items-center gap-3 mb-6">
+                            <button id="decrease-qty" class="w-10 h-10 rounded-md border border-neutral-300 flex items-center justify-center text-neutral-700 hover:bg-neutral-50 transition-all duration-200">
+                                <i class="fas fa-minus text-sm"></i>
+                            </button>
+                            <input type="number" id="quantity" value="1" min="1" max="1000" class="w-20 h-10 rounded-md border border-neutral-200 px-3 text-center text-sm font-medium text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600">
+                            <button id="increase-qty" class="w-10 h-10 rounded-md border border-neutral-300 flex items-center justify-center text-neutral-700 hover:bg-neutral-50 transition-all duration-200">
+                                <i class="fas fa-plus text-sm"></i>
+                            </button>
+                            <span class="text-xs text-neutral-600 ml-2">copies</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Order Summary -->
+                <div class="lg:col-span-2">
+                    <div class="sticky top-24">
+                        <div class="bg-white rounded-lg shadow-sm p-6 border border-neutral-200">
+                            <h3 class="text-lg font-semibold text-neutral-900 mb-6">Order Summary</h3>
+
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between text-sm text-neutral-700 mb-2">
+                                    <span>Total Pages:</span>
+                                    <span id="total-pages" class="font-semibold text-neutral-900">0</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm text-neutral-700 mb-2">
+                                    <span>Copies:</span>
+                                    <span id="summary-quantity" class="font-semibold text-neutral-900">1</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4 mb-6 border-t border-neutral-200 pt-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-neutral-700">Base Price</span>
+                                    <span id="base-price" class="font-mono text-neutral-900">₹0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-neutral-700">Binding</span>
+                                    <span id="binding-price" class="font-mono text-neutral-900">₹0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-neutral-700">Subtotal</span>
+                                    <span id="subtotal" class="font-mono text-neutral-900">₹0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-neutral-700">GST (5%)</span>
+                                    <span id="gst" class="font-mono text-neutral-900">₹0.00</span>
+                                </div>
+                                <div class="flex justify-between text-base font-semibold pt-4 border-t border-neutral-200">
+                                    <span class="text-neutral-900">Grand Total</span>
+                                    <span id="grand-total" class="font-mono text-primary-600">₹0.00</span>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="space-y-3">
+                                <button id="proceed-checkout" class="w-full h-12 bg-primary-600 text-white rounded-md font-semibold hover:bg-primary-700 transition-colors duration-200">
+                                    Proceed to Checkout
+                                </button>
+                                <button id="add-to-cart" class="w-full h-12 bg-white border-2 border-primary-600 text-primary-600 rounded-md font-semibold hover:bg-primary-50 transition-all duration-200">
+                                    <i class="fas fa-shopping-cart mr-2"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+
+                            <!-- Express Delivery Info -->
+                            <div class="mt-6 p-4 bg-accentA-50 rounded-md border border-accentA-200">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i class="fas fa-bolt text-accentA-600"></i>
+                                    <span class="text-sm font-semibold text-accentA-900">Express 2-Hour Delivery</span>
+                                </div>
+                                <p class="text-xs text-accentA-800">Available for orders placed before 6 PM (+₹50)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-800 text-white py-12 mt-auto">
+        <div class="max-w-screen-xl mx-auto px-6 sm:px-7">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-print text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold">Disha Digital Prints</h3>
+                            <p class="text-xs text-neutral-400">Print Anything, Anytime</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-neutral-400">High-quality digital printing services delivered fast across India.</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-base font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#home" class="text-sm text-neutral-400 hover:text-white transition">Home</a></li>
+                        <li><a href="index.html#services" class="text-sm text-neutral-400 hover:text-white transition">Services</a></li>
+                        <li><a href="index.html#pricing" class="text-sm text-neutral-400 hover:text-white transition">Pricing</a></li>
+                        <li><a href="index.html#how-it-works" class="text-sm text-neutral-400 hover:text-white transition">How It Works</a></li>
+                        <li><a href="my-account.html" class="text-sm text-neutral-400 hover:text-white transition">My Account</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="text-base font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="order-documents.html" class="text-sm text-neutral-400 hover:text-white transition">Document Printing</a></li>
+                        <li><a href="order-business-cards.html" class="text-sm text-neutral-400 hover:text-white transition">Business Cards</a></li>
+                        <li><a href="order-brochures.html" class="text-sm text-neutral-400 hover:text-white transition">Brochures</a></li>
+                        <li><a href="order.html" class="text-sm text-neutral-400 hover:text-white transition">Posters & Banners</a></li>
+                        <li><a href="index.html#express-service" class="text-sm text-neutral-400 hover:text-white transition">Express 2-Hour Delivery</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-base font-semibold mb-4">Contact Us</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-phone text-primary-400 mt-1"></i>
+                            <div>
+                                <p class="text-sm text-neutral-400">Phone</p>
+                                <a href="tel:+919876543210" class="text-sm text-white hover:text-primary-400 transition">+91 98765 43210</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-envelope text-primary-400 mt-1"></i>
+                            <div>
+                                <p class="text-sm text-neutral-400">Email</p>
+                                <a href="mailto:print@dishadigital.com" class="text-sm text-white hover:text-primary-400 transition">print@dishadigital.com</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fab fa-whatsapp text-accentA-400 mt-1"></i>
+                            <div>
+                                <p class="text-sm text-neutral-400">WhatsApp</p>
+                                <a href="https://wa.me/919876543210" class="text-sm text-white hover:text-accentA-400 transition">Chat with us</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-neutral-700 pt-6">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-sm text-neutral-400">© 2025 DISHA DIGITAL PRINTS. All Rights Reserved.</p>
+                    <div class="flex items-center gap-6">
+                        <a href="#" class="text-sm text-neutral-400 hover:text-white transition">Privacy Policy</a>
+                        <a href="#" class="text-sm text-neutral-400 hover:text-white transition">Terms of Service</a>
+                        <a href="#" class="text-sm text-neutral-400 hover:text-white transition">Refund Policy</a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="text-neutral-400 hover:text-white transition" aria-label="Facebook">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-neutral-400 hover:text-white transition" aria-label="Instagram">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-neutral-400 hover:text-white transition" aria-label="Twitter">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download App -->
+            <div class="mt-6 text-center">
+                <a href="#" class="inline-flex items-center gap-2 bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                    <i class="fab fa-android"></i>
+                    Download Android App
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/header-auth.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/whatsapp-service.js"></script>
+    <script src="js/cart-tracker.js"></script>
+    <script src="js/config-loader.js"></script>
+    <script src="js/order-documents.js"></script>
+
+</body>
+</html>

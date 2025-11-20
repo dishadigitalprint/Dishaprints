@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Disha Digital Prints</title>
+    <meta name="description" content="Complete your payment using UPI. Scan QR code or enter UPI ID. Secure and instant payment processing.">
+    <meta name="keywords" content="UPI payment, online payment, secure checkout, QR code payment">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://dishaprints.com/checkout-payment.html">
+    
+    <!-- Tailwind CSS with Custom Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neutral: {
+                            0: '#FFFFFF', 50: '#F9FAFB', 100: '#F2F4F7', 200: '#E5E7EB',
+                            300: '#D1D5DB', 400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563',
+                            700: '#374151', 800: '#1F2937', 900: '#111827'
+                        },
+                        primary: {
+                            50: '#EEF6FF', 100: '#D9ECFF', 200: '#B7D7FF', 300: '#8ABEFF',
+                            400: '#5AA3FF', 500: '#2F85FF', 600: '#1E6CE0', 700: '#1554B3',
+                            800: '#0E3D86', 900: '#082858'
+                        },
+                        accentA: { 100: '#EAFBF1', 300: '#7ADFA6', 500: '#22C55E', 600: '#16A34A', 700: '#16A34A' },
+                        accentB: { 100: '#FFF4E5', 300: '#FFC275', 500: '#FB923C', 700: '#EA580C' },
+                        danger: { 100: '#FEECEC', 300: '#F68A8A', 500: '#EF4444', 700: '#DC2626' },
+                        info: { 100: '#E8F5FF', 300: '#7CC5FF', 500: '#3B82F6', 700: '#2563EB' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+                    },
+                    spacing: {
+                        '1': '2px', '2': '4px', '3': '8px', '4': '12px', '5': '16px',
+                        '6': '20px', '7': '24px', '8': '32px', '9': '40px', '10': '48px'
+                    },
+                    borderRadius: {
+                        'xs': '6px', 'sm': '8px', 'md': '12px', 'lg': '16px', 'xl': '24px'
+                    },
+                    boxShadow: {
+                        'xs': '0 1px 2px rgba(16,24,40,0.06)',
+                        'sm': '0 2px 6px rgba(16,24,40,0.08)',
+                        'md': '0 8px 24px rgba(16,24,40,0.10)',
+                        'lg': '0 12px 32px rgba(16,24,40,0.12)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase-db.js"></script>
+    <script src="js/cart-tracker.js"></script>
+    <script src="js/razorpay-service.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-neutral-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-neutral-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-print text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-neutral-900">Disha Digital Prints</span>
+                </a>
+
+                <!-- Checkout Progress -->
+                <div class="hidden md:flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-accentA-600">
+                        <div class="w-8 h-8 bg-accentA-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-white text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Cart</span>
+                    </div>
+                    <div class="w-8 h-0.5 bg-accentA-600"></div>
+                    <div class="flex items-center gap-2 text-accentA-600">
+                        <div class="w-8 h-8 bg-accentA-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-white text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Address</span>
+                    </div>
+                    <div class="w-8 h-0.5 bg-primary-600"></div>
+                    <div class="flex items-center gap-2 text-primary-600">
+                        <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            3
+                        </div>
+                        <span class="text-sm font-medium">Payment</span>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-neutral-600 hover:text-primary-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Payment Section -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Payment Methods -->
+                <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <h2 class="text-xl font-bold text-neutral-900 mb-6">Select Payment Method</h2>
+                    
+                    <div class="space-y-3">
+                        <!-- Razorpay Payment (Recommended) -->
+                        <label id="razorpayOption" class="flex items-center gap-4 p-4 border-2 border-accentA-600 bg-accentA-50 rounded-lg cursor-pointer hidden">
+                            <input type="radio" name="paymentMethod" value="razorpay" checked class="w-5 h-5 text-accentA-600">
+                            <div class="flex items-center gap-3 flex-1">
+                                <div class="w-12 h-12 bg-accentA-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-credit-card text-accentA-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <p class="font-semibold text-neutral-900">Razorpay - Instant Verification</p>
+                                        <span class="text-xs bg-accentA-600 text-white px-2 py-0.5 rounded-full">Recommended</span>
+                                    </div>
+                                    <p class="text-sm text-neutral-600">UPI, Cards, Netbanking, Wallets</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex gap-2">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Google_Pay_Logo_%282020%29.svg/512px-Google_Pay_Logo_%282020%29.svg.png" alt="UPI" class="h-5">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Visa_Logo.png" alt="Visa" class="h-5">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-5">
+                                </div>
+                            </div>
+                        </label>
+                        
+                        <!-- UPI QR Payment (Manual) -->
+                        <label class="flex items-center gap-4 p-4 border-2 border-primary-600 bg-primary-50 rounded-lg cursor-pointer">
+                            <input type="radio" name="paymentMethod" value="upi" checked class="w-5 h-5 text-primary-600">
+                            <div class="flex items-center gap-3 flex-1">
+                                <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-qrcode text-primary-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-neutral-900">UPI QR Code</p>
+                                    <p class="text-sm text-neutral-600">Scan QR with any UPI app</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Google_Pay_Logo_%282020%29.svg/512px-Google_Pay_Logo_%282020%29.svg.png" alt="GPay" class="h-6">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/PhonePe_Logo.png/512px-PhonePe_Logo.png" alt="PhonePe" class="h-6">
+                            </div>
+                        </label>
+
+                        <!-- Cash on Delivery -->
+                        <label class="flex items-center gap-4 p-4 border-2 border-neutral-200 rounded-lg cursor-pointer hover:border-primary-300">
+                            <input type="radio" name="paymentMethod" value="cod" class="w-5 h-5 text-primary-600">
+                            <div class="flex items-center gap-3 flex-1">
+                                <div class="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-money-bill-wave text-neutral-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-neutral-900">Cash on Delivery</p>
+                                    <p class="text-sm text-neutral-600">Pay when you receive</p>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- Pay at Store -->
+                        <label class="flex items-center gap-4 p-4 border-2 border-neutral-200 rounded-lg cursor-pointer hover:border-primary-300">
+                            <input type="radio" name="paymentMethod" value="store" class="w-5 h-5 text-primary-600">
+                            <div class="flex items-center gap-3 flex-1">
+                                <div class="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-store text-neutral-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-neutral-900">Pay at Store</p>
+                                    <p class="text-sm text-neutral-600">Pay when picking up</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- UPI Payment Details (Shown when UPI is selected) -->
+                <div id="upiPaymentSection" class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <h3 class="text-lg font-bold text-neutral-900 mb-4">Complete UPI Payment</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- QR Code -->
+                        <div class="text-center">
+                            <div class="bg-neutral-50 border-2 border-dashed border-neutral-300 rounded-lg p-6 mb-4">
+                                <img id="upiQRCode" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=dishaprints@paytm%26pn=DishaPrints%26cu=INR" 
+                                    alt="UPI QR Code" class="w-48 h-48 mx-auto">
+                            </div>
+                            <p class="text-sm text-neutral-600 mb-2">Scan with any UPI app</p>
+                            <div class="flex justify-center gap-2">
+                                <span class="text-xs bg-neutral-100 px-2 py-1 rounded">GPay</span>
+                                <span class="text-xs bg-neutral-100 px-2 py-1 rounded">PhonePe</span>
+                                <span class="text-xs bg-neutral-100 px-2 py-1 rounded">Paytm</span>
+                                <span class="text-xs bg-neutral-100 px-2 py-1 rounded">BHIM</span>
+                            </div>
+                        </div>
+
+                        <!-- Payment Instructions -->
+                        <div>
+                            <div class="bg-info-50 border border-info-200 rounded-lg p-4 mb-4">
+                                <h4 class="font-semibold text-info-900 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-info-circle"></i>
+                                    Payment Instructions
+                                </h4>
+                                <ol class="text-sm text-info-800 space-y-2 list-decimal list-inside">
+                                    <li>Open any UPI app on your phone</li>
+                                    <li>Scan the QR code shown</li>
+                                    <li>Enter amount: <strong id="paymentAmount">₹0.00</strong></li>
+                                    <li>Complete the payment</li>
+                                    <li>Upload payment screenshot below</li>
+                                </ol>
+                            </div>
+
+                            <!-- UPI ID -->
+                            <div class="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+                                <p class="text-xs text-neutral-600 mb-1">Or enter UPI ID manually:</p>
+                                <div class="flex items-center gap-2">
+                                    <code class="text-sm font-mono text-neutral-900 flex-1">dishaprints@paytm</code>
+                                    <button onclick="copyUPIId()" class="text-primary-600 hover:text-primary-700">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Proof Upload -->
+                    <div class="mt-6 border-t border-neutral-200 pt-6">
+                        <h4 class="font-semibold text-neutral-900 mb-4">Upload Payment Screenshot</h4>
+                        
+                        <div id="uploadZone" class="border-2 border-dashed border-neutral-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors cursor-pointer">
+                            <input type="file" id="paymentProof" accept="image/*" class="hidden">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-neutral-400 mb-3"></i>
+                            <p class="text-neutral-600 mb-2">Click to upload or drag and drop</p>
+                            <p class="text-sm text-neutral-500">PNG, JPG up to 5MB</p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div id="previewSection" class="hidden mt-4">
+                            <div class="flex items-center gap-4 bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+                                <img id="previewImage" src="" alt="Preview" class="w-20 h-20 object-cover rounded">
+                                <div class="flex-1">
+                                    <p id="fileName" class="font-medium text-neutral-900"></p>
+                                    <p id="fileSize" class="text-sm text-neutral-600"></p>
+                                </div>
+                                <button onclick="removeFile()" class="text-danger-600 hover:text-danger-700">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Details (Optional) -->
+                        <div class="mt-4 space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-700 mb-2">
+                                    Transaction ID / UPI Reference Number (Optional)
+                                </label>
+                                <input type="text" id="transactionId" placeholder="e.g., 123456789012" 
+                                    class="w-full h-10 px-4 rounded-md border border-neutral-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COD/Store Payment Info (Hidden by default) -->
+                <div id="codPaymentSection" class="hidden bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-accentA-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-info-circle text-accentA-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-neutral-900 mb-2">Cash on Delivery</h4>
+                            <p class="text-sm text-neutral-600 mb-3">You can pay in cash when your order is delivered to your address.</p>
+                            <ul class="text-sm text-neutral-600 space-y-1 list-disc list-inside">
+                                <li>Please keep exact amount ready</li>
+                                <li>Payment receipt will be provided</li>
+                                <li>COD charges: ₹20 extra</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="storePaymentSection" class="hidden bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-info-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-store text-info-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-neutral-900 mb-2">Pay at Store</h4>
+                            <p class="text-sm text-neutral-600 mb-3">You can pay when you pick up your order from our store.</p>
+                            <div class="bg-neutral-50 border border-neutral-200 rounded-lg p-3 mt-3">
+                                <p class="font-medium text-neutral-900">Disha Digital Prints - Hitech City</p>
+                                <p class="text-sm text-neutral-600">Plot No. 123, Road No. 45, Hitech City</p>
+                                <p class="text-sm text-neutral-600">Open: Mon-Sat 9AM-8PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6 sticky top-24">
+                    <h3 class="text-lg font-bold text-neutral-900 mb-4">Order Summary</h3>
+                    
+                    <!-- Cart Items -->
+                    <div id="cartSummary" class="space-y-3 mb-4 pb-4 border-b border-neutral-200">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <!-- Pricing -->
+                    <div class="space-y-2 mb-4 pb-4 border-b border-neutral-200">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-neutral-600">Subtotal</span>
+                            <span id="subtotal" class="font-medium text-neutral-900">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-neutral-600">GST (5%)</span>
+                            <span id="gst" class="font-medium text-neutral-900">₹0.00</span>
+                        </div>
+                        <div id="deliveryChargeRow" class="flex justify-between text-sm">
+                            <span class="text-neutral-600">Delivery Charges</span>
+                            <span id="deliveryCharge" class="font-medium text-neutral-900">₹0.00</span>
+                        </div>
+                        <div id="codChargeRow" class="hidden flex justify-between text-sm">
+                            <span class="text-neutral-600">COD Charges</span>
+                            <span class="font-medium text-neutral-900">₹20.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-lg font-bold text-neutral-900">Total Amount</span>
+                        <span id="totalAmount" class="text-2xl font-bold text-primary-600">₹0.00</span>
+                    </div>
+
+                    <!-- Place Order Button -->
+                    <button id="placeOrderBtn" class="w-full px-6 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors shadow-sm">
+                        <i class="fas fa-lock mr-2"></i>Place Order
+                    </button>
+
+                    <p class="text-xs text-neutral-500 text-center mt-4">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Your payment information is secure
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p class="text-sm text-neutral-400">&copy; 2024 Disha Digital Prints. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth-utils.js"></script>
+    <script src="js/whatsapp-service.js"></script>
+    <script src="js/checkout-payment.js"></script>
+</body>
+</html>

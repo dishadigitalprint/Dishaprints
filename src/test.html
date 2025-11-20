@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Test - Disha Digital Prints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">System Test Dashboard</h1>
+        
+        <!-- Authentication Status -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Authentication Status</h2>
+            <div id="authStatus"></div>
+            <div class="mt-4 space-x-4">
+                <button onclick="testLogin()" class="px-4 py-2 bg-blue-600 text-white rounded">Go to Login</button>
+                <button onclick="AUTH.makeAdmin()" class="px-4 py-2 bg-purple-600 text-white rounded">Make Admin</button>
+                <button onclick="AUTH.logout()" class="px-4 py-2 bg-red-600 text-white rounded">Logout</button>
+            </div>
+        </div>
+
+        <!-- Cart Status -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Cart Status</h2>
+            <div id="cartStatus"></div>
+            <div class="mt-4">
+                <button onclick="viewCart()" class="px-4 py-2 bg-green-600 text-white rounded">View Cart</button>
+            </div>
+        </div>
+
+        <!-- Activities -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Activity Log (Last 10)</h2>
+            <div id="activities"></div>
+            <div class="mt-4">
+                <button onclick="viewDashboard()" class="px-4 py-2 bg-purple-600 text-white rounded">View Full Dashboard</button>
+                <button onclick="clearActivities()" class="px-4 py-2 bg-red-600 text-white rounded">Clear All</button>
+            </div>
+        </div>
+
+        <!-- WhatsApp Config -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">WhatsApp Configuration</h2>
+            <div id="whatsappStatus"></div>
+        </div>
+
+        <!-- Quick Tests -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold mb-4">Quick Tests</h2>
+            <div class="space-y-2">
+                <button onclick="testOTP()" class="block w-full px-4 py-2 bg-blue-600 text-white rounded text-left">
+                    <i class="fas fa-key mr-2"></i>Test OTP Generation
+                </button>
+                <button onclick="testPhoneValidation()" class="block w-full px-4 py-2 bg-blue-600 text-white rounded text-left">
+                    <i class="fas fa-phone mr-2"></i>Test Phone Validation
+                </button>
+                <button onclick="testActivityLog()" class="block w-full px-4 py-2 bg-blue-600 text-white rounded text-left">
+                    <i class="fas fa-clipboard-list mr-2"></i>Log Test Activity
+                </button>
+                <button onclick="testCartAbandonment()" class="block w-full px-4 py-2 bg-blue-600 text-white rounded text-left">
+                    <i class="fas fa-shopping-cart mr-2"></i>Test Cart Abandonment (5 min wait)
+                </button>
+            </div>
+            <div id="testResults" class="mt-4 p-4 bg-gray-100 rounded min-h-[100px]"></div>
+        </div>
+    </div>
+
+    <script src="js/auth-utils.js"></script>
+    <script src="js/whatsapp-service.js"></script>
+    <script>
+        // Check authentication
+        function updateAuthStatus() {
+            const user = AUTH.getUser();
+            const div = document.getElementById('authStatus');
+            
+            if (user) {
+                div.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                        <div>
+                            <p class="font-bold">${user.name}</p>
+                            <p class="text-sm text-gray-600">+91 ${user.phone}</p>
+                            <span class="inline-block mt-1 px-2 py-1 text-xs rounded ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
+                                ${user.role.toUpperCase()}
+                            </span>
+                            ${user.phoneVerified ? '<span class="ml-2 inline-block px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Verified</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <i class="fas fa-times-circle text-red-600 text-2xl"></i>
+                        <p class="text-gray-600">Not logged in</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Check cart
+        function updateCartStatus() {
+            const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+            const div = document.getElementById('cartStatus');
+            
+            if (cart.length > 0) {
+                div.innerHTML = `
+                    <p class="text-lg"><strong>${cart.length}</strong> items in cart</p>
+                    <ul class="mt-2 text-sm text-gray-600">
+                        ${cart.map(item => `<li>• ${item.productType} - ₹${item.totalPrice}</li>`).join('')}
+                    </ul>
+                `;
+            } else {
+                div.innerHTML = `<p class="text-gray-600">Cart is empty</p>`;
+            }
+        }
+
+        // Show activities
+        function updateActivities() {
+            const activities = JSON.parse(localStorage.getItem('adminActivities') || '[]');
+            const div = document.getElementById('activities');
+            
+            if (activities.length > 0) {
+                const recent = activities.slice(-10).reverse();
+                div.innerHTML = `
+                    <div class="space-y-2">
+                        ${recent.map(a => `
+                            <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                                <div>
+                                    <p class="font-medium">${a.action}</p>
+                                    <p class="text-sm text-gray-600">${a.name} - +91 ${a.phone}</p>
+                                </div>
+                                <span class="text-xs text-gray-500">${new Date(a.timestamp).toLocaleTimeString()}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <p class="text-sm text-gray-600 mt-4">Total activities: ${activities.length}</p>
+                `;
+            } else {
+                div.innerHTML = `<p class="text-gray-600">No activities logged yet</p>`;
+            }
+        }
+
+        // WhatsApp status
+        function updateWhatsAppStatus() {
+            const div = document.getElementById('whatsappStatus');
+            const config = {
+                phoneNumberId: whatsappService.config.phoneNumberId,
+                accessToken: whatsappService.config.accessToken
+            };
+            
+            const isConfigured = config.phoneNumberId !== 'YOUR_PHONE_NUMBER_ID' && 
+                                 config.accessToken !== 'YOUR_ACCESS_TOKEN';
+            
+            div.innerHTML = `
+                <div class="flex items-center gap-4 mb-4">
+                    <i class="fas ${isConfigured ? 'fa-check-circle text-green-600' : 'fa-exclamation-circle text-yellow-600'} text-2xl"></i>
+                    <div>
+                        <p class="font-bold">${isConfigured ? 'Configured' : 'Not Configured'}</p>
+                        <p class="text-sm text-gray-600">${isConfigured ? 'WhatsApp API is ready' : 'Using fallback mode (console/alert)'}</p>
+                    </div>
+                </div>
+                <div class="text-sm space-y-1">
+                    <p><strong>Phone Number ID:</strong> ${config.phoneNumberId === 'YOUR_PHONE_NUMBER_ID' ? '⚠️ Not set' : '✅ Configured'}</p>
+                    <p><strong>Access Token:</strong> ${config.accessToken === 'YOUR_ACCESS_TOKEN' ? '⚠️ Not set' : '✅ Configured'}</p>
+                    <p class="mt-2 text-blue-600"><a href="../WHATSAPP_SETUP.md" class="underline">→ Setup Guide</a></p>
+                </div>
+            `;
+        }
+
+        // Test functions
+        function testLogin() {
+            window.location.href = 'login.html?return=test.html';
+        }
+
+        function viewCart() {
+            window.location.href = 'cart.html';
+        }
+
+        function viewDashboard() {
+            const user = AUTH.getUser();
+            if (user && user.role === 'admin') {
+                window.location.href = 'admin-activity.html';
+            } else {
+                alert('Please login as admin first. Click "Make Admin" button above.');
+            }
+        }
+
+        function clearActivities() {
+            if (confirm('Clear all activities?')) {
+                localStorage.removeItem('adminActivities');
+                updateActivities();
+                showResult('Activities cleared!', 'success');
+            }
+        }
+
+        function testOTP() {
+            const otp = whatsappService.generateOTP();
+            showResult(`Generated OTP: ${otp}\n(6-digit number between 100000-999999)`, 'success');
+        }
+
+        function testPhoneValidation() {
+            const tests = [
+                { phone: '9876543210', expected: true },
+                { phone: '8765432109', expected: true },
+                { phone: '1234567890', expected: false },
+                { phone: '98765', expected: false }
+            ];
+            
+            const results = tests.map(t => {
+                const valid = whatsappService.validatePhoneNumber(t.phone);
+                const passed = valid === t.expected;
+                return `${passed ? '✅' : '❌'} ${t.phone}: ${valid ? 'Valid' : 'Invalid'} (expected ${t.expected})`;
+            });
+            
+            showResult('Phone Validation Tests:\n' + results.join('\n'), 'success');
+        }
+
+        function testActivityLog() {
+            const user = AUTH.getUser();
+            if (!user) {
+                showResult('Please login first!', 'error');
+                return;
+            }
+            
+            activityLogger.log('Test activity from test page', { test: true });
+            updateActivities();
+            showResult('Activity logged successfully!', 'success');
+        }
+
+        function testCartAbandonment() {
+            const user = AUTH.getUser();
+            if (!user) {
+                showResult('Please login first!', 'error');
+                return;
+            }
+            
+            const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+            if (cart.length === 0) {
+                showResult('Add items to cart first!', 'error');
+                return;
+            }
+            
+            showResult('Cart abandonment timer started!\nWait 5 minutes on checkout page to trigger alert.', 'success');
+            window.location.href = 'checkout-address.html';
+        }
+
+        function showResult(text, type) {
+            const div = document.getElementById('testResults');
+            const color = type === 'success' ? 'text-green-700' : 'text-red-700';
+            div.innerHTML = `<pre class="${color}">${text}</pre>`;
+        }
+
+        // Initial load
+        updateAuthStatus();
+        updateCartStatus();
+        updateActivities();
+        updateWhatsAppStatus();
+
+        // Auto-refresh
+        setInterval(() => {
+            updateAuthStatus();
+            updateCartStatus();
+            updateActivities();
+        }, 5000);
+    </script>
+</body>
+</html>

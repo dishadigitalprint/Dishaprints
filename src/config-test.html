@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Test - Disha Digital Prints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../tailwind.config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">
+            <i class="fas fa-cog text-blue-600 mr-3"></i>
+            Configuration Test Dashboard
+        </h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Documents Config -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-file-alt text-blue-600 mr-2"></i>
+                    Documents
+                </h2>
+                <div id="documents-config" class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Base Price:</span>
+                        <span id="doc-base-price" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">GST Rate:</span>
+                        <span id="doc-gst" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Price Unit:</span>
+                        <span id="doc-unit" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <hr class="my-3">
+                    <div>
+                        <p class="text-gray-600 font-medium mb-2">Paper Types:</p>
+                        <ul id="doc-paper-types" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 font-medium mb-2">Color Options:</p>
+                        <ul id="doc-colors" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 font-medium mb-2">Binding Options:</p>
+                        <ul id="doc-binding" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+                    </div>
+                </div>
+                <a href="order-documents.html" class="mt-4 block w-full bg-blue-600 text-white text-center py-2 rounded-md hover:bg-blue-700 transition">
+                    Test Documents Page
+                </a>
+            </div>
+
+            <!-- Business Cards Config -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-address-card text-green-600 mr-2"></i>
+                    Business Cards
+                </h2>
+                <div id="business-cards-config" class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Base Price:</span>
+                        <span id="bc-base-price" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">GST Rate:</span>
+                        <span id="bc-gst" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Price Unit:</span>
+                        <span id="bc-unit" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <hr class="my-3">
+                    <div>
+                        <p class="text-gray-600 font-medium mb-2">Materials:</p>
+                        <ul id="bc-materials" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 font-medium mb-2">Finishes:</p>
+                        <ul id="bc-finishes" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+                    </div>
+                </div>
+                <a href="order-business-cards.html" class="mt-4 block w-full bg-green-600 text-white text-center py-2 rounded-md hover:bg-green-700 transition">
+                    Test Business Cards Page
+                </a>
+            </div>
+
+            <!-- Brochures Config -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-book-open text-purple-600 mr-2"></i>
+                    Brochures
+                </h2>
+                <div id="brochures-config" class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Base Price:</span>
+                        <span id="br-base-price" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">GST Rate:</span>
+                        <span id="br-gst" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Price Unit:</span>
+                        <span id="br-unit" class="font-semibold text-gray-900">Loading...</span>
+                    </div>
+                    <hr class="my-3">
+                    <div>
+                        <p class="text-gray-600 font-medium mb-2">Paper Types:</p>
+                        <ul id="br-paper-types" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 font-medium mb-2">Finishes:</p>
+                        <ul id="br-finishes" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+                    </div>
+                </div>
+                <a href="order-brochures.html" class="mt-4 block w-full bg-purple-600 text-white text-center py-2 rounded-md hover:bg-purple-700 transition">
+                    Test Brochures Page
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Indicator -->
+        <div id="status" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p class="text-blue-900">
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                Loading configuration from database...
+            </p>
+        </div>
+
+        <!-- Admin Link -->
+        <div class="bg-gray-100 border border-gray-300 rounded-lg p-6 text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Admin Configuration</h3>
+            <p class="text-gray-600 mb-4">Make changes to pricing and configuration in the admin panel</p>
+            <a href="admin-settings.html" class="inline-block bg-gray-900 text-white px-6 py-3 rounded-md hover:bg-gray-800 transition">
+                <i class="fas fa-cog mr-2"></i>
+                Go to Admin Settings
+            </a>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-yellow-900 mb-3">
+                <i class="fas fa-info-circle mr-2"></i>
+                How to Test
+            </h3>
+            <ol class="list-decimal list-inside space-y-2 text-yellow-900">
+                <li>Review the configuration loaded from the database above</li>
+                <li>Click "Go to Admin Settings" to modify prices or options</li>
+                <li>Make changes in the admin panel and click "Save All Changes"</li>
+                <li>Reload this page to see updated configuration</li>
+                <li>Click "Test [Product] Page" buttons to verify changes reflect on user pages</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/config-loader.js"></script>
+    <script>
+        async function loadAllConfigurations() {
+            try {
+                // Documents
+                await ConfigLoader.initializeForProduct('documents');
+                document.getElementById('doc-base-price').textContent = '₹' + ConfigLoader.getBasePrice('documents');
+                document.getElementById('doc-gst').textContent = (ConfigLoader.getGSTRate('documents') * 100).toFixed(2) + '%';
+                document.getElementById('doc-unit').textContent = ConfigLoader.getPriceUnit('documents');
+                
+                const docPaperTypes = ConfigLoader.getConfigOptions('documents', 'paper_type');
+                document.getElementById('doc-paper-types').innerHTML = docPaperTypes.map(opt => 
+                    `<li>${opt.label} ${opt.priceModifier > 0 ? '(+₹' + opt.priceModifier + ')' : ''}</li>`
+                ).join('');
+                
+                const docColors = ConfigLoader.getConfigOptions('documents', 'color');
+                document.getElementById('doc-colors').innerHTML = docColors.map(opt => 
+                    `<li>${opt.label} ${opt.priceModifier > 0 ? '(+₹' + opt.priceModifier + ')' : ''}</li>`
+                ).join('');
+                
+                const docBinding = ConfigLoader.getConfigOptions('documents', 'binding');
+                document.getElementById('doc-binding').innerHTML = docBinding.map(opt => 
+                    `<li>${opt.label} ${opt.priceModifier > 0 ? '(+₹' + opt.priceModifier + ')' : ''}</li>`
+                ).join('');
+
+                // Business Cards
+                await ConfigLoader.initializeForProduct('business_cards');
+                document.getElementById('bc-base-price').textContent = '₹' + ConfigLoader.getBasePrice('business_cards');
+                document.getElementById('bc-gst').textContent = (ConfigLoader.getGSTRate('business_cards') * 100).toFixed(2) + '%';
+                document.getElementById('bc-unit').textContent = ConfigLoader.getPriceUnit('business_cards');
+                
+                const bcMaterials = ConfigLoader.getConfigOptions('business_cards', 'material');
+                document.getElementById('bc-materials').innerHTML = bcMaterials.map(opt => 
+                    `<li>${opt.label} ${opt.priceModifier > 0 ? '(+₹' + opt.priceModifier + ')' : ''}</li>`
+                ).join('');
+                
+                const bcFinishes = ConfigLoader.getConfigOptions('business_cards', 'finish');
+                document.getElementById('bc-finishes').innerHTML = bcFinishes.map(opt => 
+                    `<li>${opt.label} ${opt.priceModifier > 0 ? '(+₹' + opt.priceModifier + ')' : ''}</li>`
+                ).join('');
+
+                // Brochures
+                await ConfigLoader.initializeForProduct('brochures');
+                document.getElementById('br-base-price').textContent = '₹' + ConfigLoader.getBasePrice('brochures');
+                document.getElementById('br-gst').textContent = (ConfigLoader.getGSTRate('brochures') * 100).toFixed(2) + '%';
+                document.getElementById('br-unit').textContent = ConfigLoader.getPriceUnit('brochures');
+                
+                const brPaperTypes = ConfigLoader.getConfigOptions('brochures', 'paper_type');
+                document.getElementById('br-paper-types').innerHTML = brPaperTypes.map(opt => 
+                    `<li>${opt.label} ${opt.priceModifier > 0 ? '(+₹' + opt.priceModifier + ')' : ''}</li>`
+                ).join('');
+                
+                const brFinishes = ConfigLoader.getConfigOptions('brochures', 'finish');
+                document.getElementById('br-finishes').innerHTML = brFinishes.map(opt => 
+                    `<li>${opt.label} ${opt.priceModifier > 0 ? '(+₹' + opt.priceModifier + ')' : ''}</li>`
+                ).join('');
+
+                // Success
+                document.getElementById('status').innerHTML = `
+                    <p class="text-green-900">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        ✅ Configuration loaded successfully from database!
+                    </p>
+                `;
+                document.getElementById('status').className = 'bg-green-50 border border-green-200 rounded-lg p-4 mb-6';
+
+            } catch (error) {
+                console.error('Error loading configurations:', error);
+                document.getElementById('status').innerHTML = `
+                    <p class="text-red-900">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        ❌ Error loading configuration: ${error.message}
+                    </p>
+                `;
+                document.getElementById('status').className = 'bg-red-50 border border-red-200 rounded-lg p-4 mb-6';
+            }
+        }
+
+        // Load on page load
+        loadAllConfigurations();
+    </script>
+</body>
+</html>

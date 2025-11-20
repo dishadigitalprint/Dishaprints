@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disha Digital Prints - High-Quality Digital Printing, Delivered Fast</title>
+    <meta name="description" content="Professional digital printing services in India. From documents to banners, business cards to invitations. Express 2-hour delivery available. Order now!">
+    <meta name="keywords" content="digital printing, online printing services, document printing, banner printing, business cards, invitations, flyers, brochures, same day printing, express delivery, India">
+    <meta name="author" content="Disha Digital Prints">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dishaprints.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dishaprints.com/">
+    <meta property="og:title" content="Disha Digital Prints - High-Quality Digital Printing, Delivered Fast">
+    <meta property="og:description" content="Professional digital printing services in India. From documents to banners, business cards to invitations. Express 2-hour delivery available.">
+    <meta property="og:image" content="https://dishaprints.com/images/og-image.jpg">
+    <meta property="og:site_name" content="Disha Digital Prints">
+    <meta property="og:locale" content="en_IN">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://dishaprints.com/">
+    <meta name="twitter:title" content="Disha Digital Prints - High-Quality Digital Printing">
+    <meta name="twitter:description" content="Professional digital printing services in India. Express 2-hour delivery available.">
+    <meta name="twitter:image" content="https://dishaprints.com/images/twitter-card.jpg">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Disha Digital Prints",
+      "image": "https://dishaprints.com/images/logo.png",
+      "description": "Professional digital printing services offering documents, banners, business cards, and more with express delivery.",
+      "url": "https://dishaprints.com",
+      "telephone": "+91-9876543210",
+      "priceRange": "₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:00",
+        "closes": "21:00"
+      },
+      "sameAs": [
+        "https://facebook.com/dishaprints",
+        "https://instagram.com/dishaprints",
+        "https://twitter.com/dishaprints"
+      ]
+    }
+    </script>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0000FF',
+                        accent: '#FFA500',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    
+    <!-- Font Awesome -->
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="font-sans bg-white text-gray-900">
+
+    <!-- Header Section -->
+    <header id="header" class="sticky top-0 z-50 bg-white shadow-md border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between gap-6">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-print text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Disha Digital Prints</h1>
+                        <p class="text-xs text-gray-500">Print Anything, Anytime</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden lg:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-primary font-medium transition">Home</a>
+                    <a href="#services" class="text-gray-700 hover:text-primary font-medium transition">Services</a>
+                    <a href="#pricing" class="text-gray-700 hover:text-primary font-medium transition">Pricing</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-primary font-medium transition">How It Works</a>
+                    <a href="#express-service" class="text-gray-700 hover:text-primary font-medium transition">Express 2-Hour</a>
+                    <a href="#contact" class="text-gray-700 hover:text-primary font-medium transition">Contact</a>
+                </nav>
+                
+                <!-- Action Buttons (Guest Only - Logged-in users are redirected) -->
+                <div class="flex items-center gap-3">
+                    <!-- Primary CTA: Upload & Print -->
+                    <a href="order.html" class="hidden lg:flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                        <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                        <span>Upload & Print</span>
+                    </a>
+                    
+                    <!-- Secondary CTA: WhatsApp -->
+                    <a href="https://wa.me/919876543210" class="hidden lg:flex items-center gap-2 bg-white text-green-600 border-2 border-green-500 px-5 py-3 rounded-lg font-medium hover:bg-green-50 transition-all duration-200">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                        <span class="hidden xl:inline">WhatsApp</span>
+                    </a>
+                    
+                    <!-- Sign In / Sign Up -->
+                    <div class="hidden md:flex items-center gap-2">
+                        <a href="login.html" class="flex items-center gap-2 text-gray-700 hover:text-primary font-medium px-4 py-2.5 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                            <i class="fa-solid fa-right-to-bracket text-lg"></i>
+                            <span>Sign In</span>
+                        </a>
+                        <span class="text-gray-300">|</span>
+                        <a href="login.html?mode=signup" class="flex items-center gap-2 text-primary hover:text-blue-700 font-semibold px-4 py-2.5 rounded-lg hover:bg-blue-50 transition-all duration-200">
+                            <i class="fa-solid fa-user-plus text-lg"></i>
+                            <span>Sign Up</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobile-menu-btn" class="lg:hidden text-gray-700 p-2 hover:bg-gray-100 rounded-lg transition" aria-label="Toggle mobile menu">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative bg-gradient-to-br from-blue-50 via-white to-orange-50 py-20 lg:py-28 overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary opacity-5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-accent opacity-5 rounded-full blur-3xl"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Hero Content -->
+                <div class="space-y-8">
+                    <div class="inline-flex items-center space-x-2 bg-blue-100 text-primary px-4 py-2 rounded-full text-sm font-semibold">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>2-Hour Express Printing Available</span>
+                    </div>
+                    
+                    <h1 class="text-5xl lg:text-7xl font-black leading-tight text-gray-900">
+                        Print Anything.<br>
+                        <span class="text-primary">Delivered in as</span><br>
+                        <span class="text-accent">Little as 2 Hours.</span>
+                    </h1>
+                    
+                    <p class="text-xl lg:text-2xl text-gray-600 leading-relaxed">
+                        From documents to banners, business cards to invitations—all types of printing at reasonable prices with 24/7 service. Upload files easily via WhatsApp, email, or our website.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="order.html" class="flex items-center justify-center space-x-2 bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+                            <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                            <span>Upload Files to Print</span>
+                        </a>
+                        <a href="#pricing" class="flex items-center justify-center space-x-2 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition shadow-lg">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Get Instant Quote</span>
+                        </a>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-6 pt-8">
+                        <div class="flex flex-col items-center text-center space-y-2">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-clock text-primary text-2xl"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-900">2-Hour Express</p>
+                        </div>
+                        <div class="flex flex-col items-center text-center space-y-2">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-headset text-green-600 text-2xl"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-900">24/7 Support</p>
+                        </div>
+                        <div class="flex flex-col items-center text-center space-y-2">
+                            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-shield-halved text-accent text-2xl"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-900">Secure Payments</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hero Image -->
+                <div class="relative">
+                    <div class="relative z-10">
+                        <img class="w-full h-auto rounded-2xl shadow-2xl" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c6667673b9-6e830f7501fda03f648a.png" alt="Digital printing service illustration">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 w-72 h-72 bg-accent opacity-20 rounded-full blur-3xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Strip Section -->
+    <section id="benefits-strip" class="bg-white py-16 border-y border-gray-200">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                <!-- Benefit 1 -->
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition">
+                        <i class="fa-solid fa-layer-group text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900">All Types of Prints</h3>
+                    <p class="text-sm text-gray-600">Documents to banners, we print everything</p>
+                </div>
+                
+                <!-- Benefit 2 -->
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition">
+                        <i class="fa-solid fa-rocket text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900">Fast Turnaround</h3>
+                    <p class="text-sm text-gray-600">Express 2-hour delivery available</p>
+                </div>
+                
+                <!-- Benefit 3 -->
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition">
+                        <i class="fa-solid fa-indian-rupee-sign text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900">Pocket-Friendly Pricing</h3>
+                    <p class="text-sm text-gray-600">Competitive rates for all services</p>
+                </div>
+                
+                <!-- Benefit 4 -->
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition">
+                        <i class="fa-solid fa-truck-fast text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900">Nationwide Shipping</h3>
+                    <p class="text-sm text-gray-600">Deliver anywhere across India</p>
+                </div>
+                
+                <!-- Benefit 5 -->
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition">
+                        <i class="fa-solid fa-clock text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900">24/7 Support</h3>
+                    <p class="text-sm text-gray-600">Always here to help you print</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="bg-gradient-to-b from-gray-50 to-white py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-black text-gray-900 mb-4">Our Printing Services</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Whatever you need to print, we've got you covered with professional quality and competitive pricing</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1: Document Printing -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border border-gray-100 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-file-lines text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Document Printing</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Black &amp; white or color documents, reports, presentations, and more. Multiple paper sizes and binding options available.</p>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-2xl font-bold text-primary">Starting at ₹2</span>
+                        <span class="text-sm text-gray-500">per page</span>
+                    </div>
+                    <a href="order.html?product=documents" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Order Now</a>
+                </div>
+                
+                <!-- Service 2: Business Cards -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border border-gray-100 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-address-card text-green-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Business Cards</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Premium quality business cards with various finishes—matte, glossy, or textured. Multiple thickness options.</p>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-2xl font-bold text-primary">Starting at ₹299</span>
+                        <span class="text-sm text-gray-500">per 100 cards</span>
+                    </div>
+                    <a href="order.html?product=business-cards" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Order Now</a>
+                </div>
+                
+                <!-- Service 3: Brochures & Flyers -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border border-gray-100 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-newspaper text-purple-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Brochures &amp; Flyers</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Eye-catching marketing materials in various sizes and folds. Perfect for promotions and events.</p>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-2xl font-bold text-primary">Starting at ₹15</span>
+                        <span class="text-sm text-gray-500">per piece</span>
+                    </div>
+                    <a href="order.html?product=brochures" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Order Now</a>
+                </div>
+                
+                <!-- Service 4: Posters & Banners -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border border-gray-100 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-scroll text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Posters &amp; Banners</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Large format printing for indoor and outdoor use. Vinyl, flex, and paper options in custom sizes.</p>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-2xl font-bold text-primary">Starting at ₹150</span>
+                        <span class="text-sm text-gray-500">per sq ft</span>
+                    </div>
+                    <a href="order.html?product=posters" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Order Now</a>
+                </div>
+                
+                <!-- Service 5: Photo Prints -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border border-gray-100 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-pink-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-image text-pink-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Photo Prints &amp; Canvas</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">High-resolution photo printing on premium paper or canvas. Perfect for memories and wall art.</p>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-2xl font-bold text-primary">Starting at ₹25</span>
+                        <span class="text-sm text-gray-500">per print</span>
+                    </div>
+                    <a href="order.html?product=photos" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Order Now</a>
+                </div>
+                
+                <!-- Service 6: Invitations -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border border-gray-100 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-envelope text-yellow-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Invitations &amp; Certificates</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Custom invitations for weddings, events, and professional certificates with elegant finishes.</p>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-2xl font-bold text-primary">Starting at ₹20</span>
+                        <span class="text-sm text-gray-500">per piece</span>
+                    </div>
+                    <a href="order.html?product=invitations" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Order Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="bg-white py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-black text-gray-900 mb-4">How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Get your prints in just 3 simple steps. It's fast, easy, and hassle-free!</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-12 relative">
+                <!-- Connecting Line -->
+                <div class="hidden md:block absolute top-1/4 left-1/4 right-1/4 h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-10 text-center shadow-lg transform hover:scale-105 transition">
+                    <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-xl">1</div>
+                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <i class="fa-solid fa-cloud-arrow-up text-primary text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Upload Your Files</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6">Send your files via our website upload form, WhatsApp, or email. We accept all major file formats including PDF, JPG, PNG, DOC, and more.</p>
+                    <div class="flex justify-center space-x-3">
+                        <span class="bg-white px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow">Website</span>
+                        <span class="bg-white px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow">WhatsApp</span>
+                        <span class="bg-white px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow">Email</span>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-10 text-center shadow-lg transform hover:scale-105 transition">
+                    <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-accent text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-xl">2</div>
+                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <i class="fa-solid fa-sliders text-accent text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Choose Options &amp; Confirm</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6">Select your printing preferences—paper type, size, color, quantity, and delivery speed. Get instant pricing and confirm your order with secure payment.</p>
+                    <div class="flex justify-center space-x-3">
+                        <span class="bg-white px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow">Customize</span>
+                        <span class="bg-white px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow">Pay Securely</span>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-10 text-center shadow-lg transform hover:scale-105 transition">
+                    <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-xl">3</div>
+                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <i class="fa-solid fa-truck-fast text-green-600 text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">We Print &amp; Deliver</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6">Our team prints your order with precision and quality. Choose standard delivery or express 2-hour service (where available). Track your order in real-time.</p>
+                    <div class="flex justify-center space-x-3">
+                        <span class="bg-white px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow">2-Hour Express</span>
+                        <span class="bg-white px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow">Track Order</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="order.html" class="inline-flex items-center space-x-2 bg-primary text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-xl">
+                    <span>Start Printing Now</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Express Service Section -->
+    <section id="express-service" class="bg-gradient-to-r from-accent to-orange-600 py-20 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Express Service Content -->
+                <div class="text-white">
+                    <div class="inline-flex items-center space-x-2 bg-white bg-opacity-20 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Lightning Fast Service</span>
+                    </div>
+                    
+                    <h2 class="text-5xl lg:text-6xl font-black mb-6">Need It Fast? Get It in 2 Hours!</h2>
+                    
+                    <p class="text-xl mb-8 leading-relaxed text-white text-opacity-90">
+                        Our express printing service delivers your prints in as little as 2 hours. Perfect for urgent meetings, last-minute presentations, or emergency printing needs. Available in select locations with priority processing.
+                    </p>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Priority Processing</h4>
+                                <p class="text-white text-opacity-80">Your order jumps to the front of the queue</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Same-Day Delivery</h4>
+                                <p class="text-white text-opacity-80">Get your prints delivered within 2 hours</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Quality Guaranteed</h4>
+                                <p class="text-white text-opacity-80">Speed doesn't compromise our quality standards</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="order.html?express=true" class="inline-flex items-center space-x-2 bg-white text-accent px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition shadow-2xl">
+                        <span>Check Availability &amp; Book Express</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <!-- Express Service Image -->
+                <div class="relative">
+                    <img class="w-full h-auto rounded-2xl shadow-2xl" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/b87022d93b-63389358c6eb34fba57d.png" alt="Express delivery service illustration">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="bg-gradient-to-b from-gray-50 to-white py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-black text-gray-900 mb-4">Affordable Pricing Packages</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Choose from our popular packages or create a custom order. Transparent pricing with no hidden costs.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Student Pack -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border-2 border-gray-200 transform hover:-translate-y-2">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-graduation-cap text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Student Pack</h3>
+                        <p class="text-gray-600 mb-4">Perfect for students and academics</p>
+                        <div class="text-4xl font-black text-primary mb-2">₹299</div>
+                        <p class="text-sm text-gray-500">Starting price</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">100 B&amp;W document pages</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">20 color pages</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">Spiral binding included</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">Free standard delivery</span>
+                        </div>
+                    </div>
+                    
+                    <a href="order.html?package=student" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Customize &amp; Order</a>
+                </div>
+                
+                <!-- Office Essentials (Popular) -->
+                <div class="bg-gradient-to-br from-primary to-blue-700 rounded-2xl shadow-2xl hover:shadow-3xl transition p-8 border-4 border-accent transform scale-105 hover:scale-110 relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-accent text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                        MOST POPULAR
+                    </div>
+                    
+                    <div class="text-center mb-6 text-white">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-briefcase text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">Office Essentials</h3>
+                        <p class="text-white text-opacity-90 mb-4">Ideal for small businesses</p>
+                        <div class="text-4xl font-black mb-2">₹999</div>
+                        <p class="text-sm text-white text-opacity-80">Starting price</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8 text-white">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-accent mt-1"></i>
+                            <span>500 B&amp;W document pages</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-accent mt-1"></i>
+                            <span>100 color pages</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-accent mt-1"></i>
+                            <span>100 business cards</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-accent mt-1"></i>
+                            <span>50 flyers (A5 size)</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-accent mt-1"></i>
+                            <span>Priority support</span>
+                        </div>
+                    </div>
+                    
+                    <a href="order.html?package=office" class="block w-full text-center bg-white text-primary py-3 rounded-lg font-semibold hover:bg-gray-100 transition shadow-lg">Customize &amp; Order</a>
+                </div>
+                
+                <!-- Marketing Kit -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8 border-2 border-gray-200 transform hover:-translate-y-2">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-bullhorn text-accent text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Marketing Kit</h3>
+                        <p class="text-gray-600 mb-4">Complete marketing solution</p>
+                        <div class="text-4xl font-black text-primary mb-2">₹2,499</div>
+                        <p class="text-sm text-gray-500">Starting price</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">200 business cards</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">200 brochures</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">2 banners (3x6 ft)</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">10 posters (A2 size)</span>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-700">Free express delivery</span>
+                        </div>
+                    </div>
+                    
+                    <a href="order.html?package=marketing" class="block w-full text-center bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Customize &amp; Order</a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-600 mb-4">Need something different? Create a custom order tailored to your needs.</p>
+                <a href="order.html?custom=true" class="inline-flex items-center space-x-2 text-primary font-semibold hover:underline">
+                    <span>Build Custom Package</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Communication Section -->
+    <section id="communication" class="bg-white py-20 border-y border-gray-200">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-black text-gray-900 mb-4">Easy Communication &amp; Support</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Multiple ways to reach us and get your printing done. We're here to help 24/7!</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- WhatsApp -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition transform hover:-translate-y-2">
+                    <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <i class="fa-brands fa-whatsapp text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">WhatsApp Chat</h3>
+                    <p class="text-gray-700 mb-6 leading-relaxed">Send your files directly via WhatsApp. Quick responses and instant quotes. Available 24/7 for your convenience.</p>
+                    <a href="https://wa.me/919876543210" class="inline-flex items-center space-x-2 bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <span>Chat Now</span>
+                    </a>
+                    <p class="text-sm text-gray-600 mt-4">+91 98765 43210</p>
+                </div>
+                
+                <!-- Email -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition transform hover:-translate-y-2">
+                    <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <i class="fa-solid fa-envelope text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Email Support</h3>
+                    <p class="text-gray-700 mb-6 leading-relaxed">Send detailed requirements and large files via email. We'll respond with quotes and confirmations within minutes.</p>
+                    <a href="mailto:print@dishadigital.com" class="inline-flex items-center space-x-2 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Email Us</span>
+                    </a>
+                    <p class="text-sm text-gray-600 mt-4">print@dishadigital.com</p>
+                </div>
+                
+                <!-- Online Upload -->
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition transform hover:-translate-y-2">
+                    <div class="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <i class="fa-solid fa-cloud-arrow-up text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Online File Upload</h3>
+                    <p class="text-gray-700 mb-6 leading-relaxed">Use our secure web portal to upload files, customize options, and place orders. Track your order status in real-time.</p>
+                    <a href="order.html" class="inline-flex items-center space-x-2 bg-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition">
+                        <i class="fa-solid fa-upload"></i>
+                        <span>Upload Files</span>
+                    </a>
+                    <p class="text-sm text-gray-600 mt-4">Secure &amp; Fast Transfer</p>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-8 text-center">
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Have Questions? Check Our FAQ</h3>
+                <p class="text-gray-600 mb-6">Find answers to common questions about file formats, turnaround times, payment methods, and more.</p>
+                <a href="#faq" class="inline-flex items-center space-x-2 text-primary font-semibold hover:underline">
+                    <span>Browse Frequently Asked Questions</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="bg-gradient-to-b from-gray-50 to-white py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-black text-gray-900 mb-4">What Our Customers Say</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Don't just take our word for it. Here's what our satisfied customers have to say about Disha Digital Prints.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition">
+                    <div class="flex items-center mb-6">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="Priya Sharma" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-900">Priya Sharma</h4>
+                            <p class="text-sm text-gray-600">Engineering Student</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">"Saved my semester! Got my project report printed and bound in just 2 hours before submission. Quality was excellent and pricing was student-friendly. Highly recommend!"</p>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition">
+                    <div class="flex items-center mb-6">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" alt="Rahul Mehta" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-900">Rahul Mehta</h4>
+                            <p class="text-sm text-gray-600">Small Business Owner</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">"The business card quality is outstanding! Got 500 cards with a beautiful finish at a great price. The WhatsApp ordering was super convenient. Will definitely order again."</p>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition">
+                    <div class="flex items-center mb-6">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="Anjali Desai" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-900">Anjali Desai</h4>
+                            <p class="text-sm text-gray-600">Marketing Manager</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">"Needed 200 brochures for an event the next day. Disha Digital delivered perfectly printed brochures in time. The colors were vibrant and the paper quality was premium. Impressed!"</p>
+                </div>
+                
+                <!-- Testimonial 4 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition">
+                    <div class="flex items-center mb-6">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="Vikram Singh" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-900">Vikram Singh</h4>
+                            <p class="text-sm text-gray-600">Corporate Executive</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">"24/7 support is a game-changer! Placed an urgent order at midnight and got it delivered by morning. Professional service, competitive pricing, and excellent quality. My go-to printing service now."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="bg-white py-20">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-black text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Got questions? We've got answers. Find everything you need to know about our services.</p>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- FAQ 1 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-clock text-primary mr-3"></i>
+                        What is the typical turnaround time for printing?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">Standard printing orders are typically completed within 24-48 hours. For urgent needs, our Express 2-Hour service is available in select locations. Delivery time depends on your location and the service selected.</p>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-file text-primary mr-3"></i>
+                        What file formats do you accept?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">We accept all major file formats including PDF, JPG, PNG, TIFF, DOC, DOCX, PPT, PPTX, AI, PSD, and more. For best print quality, we recommend PDF files with embedded fonts and high-resolution images (300 DPI or higher).</p>
+                </div>
+                
+                <!-- FAQ 3 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-credit-card text-primary mr-3"></i>
+                        What payment methods do you accept?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">We accept all major payment methods including credit/debit cards, UPI, net banking, digital wallets (Paytm, PhonePe, Google Pay), and cash on delivery (for select locations). All online payments are secured with SSL encryption.</p>
+                </div>
+                
+                <!-- FAQ 4 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-truck text-primary mr-3"></i>
+                        Do you offer delivery services?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">Yes! We offer nationwide delivery across India. Standard delivery takes 2-5 business days depending on your location. Express 2-hour delivery is available in select metro cities. You can also opt for self-pickup from our nearest location.</p>
+                </div>
+                
+                <!-- FAQ 5 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-rotate-left text-primary mr-3"></i>
+                        What if I'm not satisfied with the print quality?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">Customer satisfaction is our priority. If you're not satisfied with the print quality, contact us within 24 hours of delivery. We'll either reprint your order at no extra cost or provide a full refund. Quality issues due to low-resolution source files are not covered.</p>
+                </div>
+                
+                <!-- FAQ 6 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-box text-primary mr-3"></i>
+                        Is there a minimum order quantity?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">No minimum order required! Whether you need just one business card or 10,000 brochures, we're happy to help. However, bulk orders (500+ units) qualify for special discounted pricing. Contact our sales team for volume pricing.</p>
+                </div>
+                
+                <!-- FAQ 7 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-palette text-primary mr-3"></i>
+                        Can I see a proof before final printing?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">Absolutely! For all orders, we provide a digital proof via email or WhatsApp for your approval before proceeding with printing. You can request changes to colors, layout, or design elements. Final printing only begins after your confirmation.</p>
+                </div>
+                
+                <!-- FAQ 8 -->
+                <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fa-solid fa-headset text-primary mr-3"></i>
+                        How can I track my order?
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed pl-9">Once your order is confirmed, you'll receive a unique order ID via SMS and email. You can track your order status in real-time through our website, WhatsApp, or by calling our 24/7 customer support. You'll receive updates at every stage—printing, quality check, dispatch, and delivery.</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-600 mb-4">Still have questions?</p>
+                <a href="https://wa.me/919876543210" class="inline-flex items-center space-x-2 bg-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Contact Our Support Team</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section id="cta-final" class="bg-gradient-to-r from-primary to-blue-700 py-20 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full opacity-10">
+            <div class="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-2xl"></div>
+            <div class="absolute bottom-10 right-10 w-40 h-40 bg-accent rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center text-white">
+                <h2 class="text-5xl lg:text-6xl font-black mb-6">Ready to Print?</h2>
+                <p class="text-2xl mb-10 max-w-3xl mx-auto text-white text-opacity-90">Upload your files now and get your prints delivered in as little as 2 hours. Professional quality, affordable prices, and 24/7 support!</p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <a href="order.html" class="flex items-center space-x-3 bg-white text-primary px-10 py-5 rounded-xl font-bold text-xl hover:bg-gray-100 transition shadow-2xl transform hover:scale-105">
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+                        <span>Upload &amp; Print Now</span>
+                    </a>
+                    <a href="https://wa.me/919876543210" class="flex items-center space-x-3 bg-green-500 text-white px-10 py-5 rounded-xl font-bold text-xl hover:bg-green-600 transition shadow-2xl transform hover:scale-105">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        <span>Chat on WhatsApp</span>
+                    </a>
+                </div>
+                
+                <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-white text-opacity-80">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-check-circle text-accent"></i>
+                        <span>2-Hour Express Available</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-check-circle text-accent"></i>
+                        <span>24/7 Support</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-check-circle text-accent"></i>
+                        <span>Secure Payments</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="footer" class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-print text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">Disha Digital Prints</h3>
+                            <p class="text-sm text-gray-400">Print Anything, Anytime</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed mb-6">Your trusted partner for all printing needs. Professional quality, affordable prices, and lightning-fast delivery.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Twitter">
+                            <i class="fa-brands fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#services" class="text-gray-400 hover:text-white transition">Our Services</a></li>
+                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition">Pricing</a></li>
+                        <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition">How It Works</a></li>
+                        <li><a href="#express-service" class="text-gray-400 hover:text-white transition">Express 2-Hour</a></li>
+                        <li><a href="#faq" class="text-gray-400 hover:text-white transition">FAQs</a></li>
+                        <li><a href="login.html" class="text-gray-400 hover:text-white transition">Sign In / Sign Up</a></li>
+                        <li><a href="track-order.html" class="text-gray-400 hover:text-white transition">Track Order</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Services</h4>
+                    <ul class="space-y-3">
+                        <li><a href="order.html?product=documents" class="text-gray-400 hover:text-white transition">Document Printing</a></li>
+                        <li><a href="order.html?product=business-cards" class="text-gray-400 hover:text-white transition">Business Cards</a></li>
+                        <li><a href="order.html?product=brochures" class="text-gray-400 hover:text-white transition">Brochures &amp; Flyers</a></li>
+                        <li><a href="order.html?product=posters" class="text-gray-400 hover:text-white transition">Posters &amp; Banners</a></li>
+                        <li><a href="order.html?product=photos" class="text-gray-400 hover:text-white transition">Photo Prints</a></li>
+                        <li><a href="order.html?product=invitations" class="text-gray-400 hover:text-white transition">Invitations</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Contact Info</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-location-dot text-accent mt-1"></i>
+                            <p class="text-gray-400">123 Print Street, Business District, Mumbai, Maharashtra 400001</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-phone text-accent"></i>
+                            <a href="tel:+919876543210" class="text-gray-400 hover:text-white transition">+91 98765 43210</a>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-brands fa-whatsapp text-accent"></i>
+                            <a href="https://wa.me/919876543210" class="text-gray-400 hover:text-white transition">WhatsApp Us</a>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-envelope text-accent"></i>
+                            <a href="mailto:print@dishadigital.com" class="text-gray-400 hover:text-white transition">print@dishadigital.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2024 Disha Digital Prints. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition">Terms of Service</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition">Refund Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Floating Button -->
+    <div class="fixed bottom-6 right-6 z-50 md:hidden">
+        <a href="#upload" class="flex items-center space-x-2 bg-primary text-white px-6 py-4 rounded-full font-bold shadow-2xl hover:bg-blue-700 transition">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Upload &amp; Print</span>
+        </a>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+    
+    <!-- Auth Redirect for Landing Page -->
+    <script>
+        // Landing page is for guest users only - redirect logged-in users to their dashboard
+        (function() {
+            const userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
+            
+            if (userSession.loggedIn && userSession.phoneVerified) {
+                // User is already logged in - redirect to My Orders dashboard
+                window.location.href = 'my-orders.html';
+            }
+        })();
+    </script>
+
+</body>
+</html>

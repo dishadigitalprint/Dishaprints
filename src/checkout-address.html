@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Address - Disha Digital Prints</title>
+    <meta name="description" content="Enter your delivery and billing address for order shipment. Fast and secure checkout process.">
+    <meta name="keywords" content="delivery address, shipping address, billing address, checkout">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://dishaprints.com/checkout-address.html">
+    
+    <!-- Tailwind CSS with Custom Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neutral: {
+                            0: '#FFFFFF', 50: '#F9FAFB', 100: '#F2F4F7', 200: '#E5E7EB',
+                            300: '#D1D5DB', 400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563',
+                            700: '#374151', 800: '#1F2937', 900: '#111827'
+                        },
+                        primary: {
+                            50: '#EEF6FF', 100: '#D9ECFF', 200: '#B7D7FF', 300: '#8ABEFF',
+                            400: '#5AA3FF', 500: '#2F85FF', 600: '#1E6CE0', 700: '#1554B3',
+                            800: '#0E3D86', 900: '#082858'
+                        },
+                        accentA: { 100: '#EAFBF1', 300: '#7ADFA6', 500: '#22C55E', 600: '#16A34A', 700: '#16A34A' },
+                        accentB: { 100: '#FFF4E5', 300: '#FFC275', 500: '#FB923C', 700: '#EA580C' },
+                        danger: { 100: '#FEECEC', 300: '#F68A8A', 500: '#EF4444', 700: '#DC2626' },
+                        info: { 100: '#E8F5FF', 300: '#7CC5FF', 500: '#3B82F6', 700: '#2563EB' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+                    },
+                    spacing: {
+                        '1': '2px', '2': '4px', '3': '8px', '4': '12px', '5': '16px',
+                        '6': '20px', '7': '24px', '8': '32px', '9': '40px', '10': '48px'
+                    },
+                    borderRadius: {
+                        'xs': '6px', 'sm': '8px', 'md': '12px', 'lg': '16px', 'xl': '24px'
+                    },
+                    boxShadow: {
+                        'xs': '0 1px 2px rgba(16,24,40,0.06)',
+                        'sm': '0 2px 6px rgba(16,24,40,0.08)',
+                        'md': '0 8px 24px rgba(16,24,40,0.10)',
+                        'lg': '0 12px 32px rgba(16,24,40,0.12)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Places API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete" async defer></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==">
+</head>
+<body class="bg-neutral-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-print text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-neutral-900">Disha Digital Prints</span>
+                </a>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center gap-6">
+                    <a href="order.html" class="text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">Order</a>
+                    <a href="#" class="text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">Track Order</a>
+                    <a href="#" class="text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">My Account</a>
+                    <a href="#" id="cartIcon" class="relative text-neutral-600 hover:text-primary-600 transition-colors">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span id="cartBadge" class="absolute -top-2 -right-2 bg-danger-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden text-neutral-600 hover:text-primary-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-neutral-200">
+            <div class="px-4 py-3 space-y-3">
+                <a href="order.html" class="block text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">Order</a>
+                <a href="#" class="block text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">Track Order</a>
+                <a href="#" class="block text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">My Account</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="bg-white border-b border-neutral-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center gap-2 text-sm">
+                <a href="index.html" class="text-neutral-500 hover:text-primary-600 transition-colors">Home</a>
+                <i class="fas fa-chevron-right text-neutral-400 text-xs"></i>
+                <a href="order.html" class="text-neutral-500 hover:text-primary-600 transition-colors">Order</a>
+                <i class="fas fa-chevron-right text-neutral-400 text-xs"></i>
+                <span class="text-neutral-900 font-medium">Checkout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Progress -->
+    <div class="bg-white border-b border-neutral-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between relative">
+                <!-- Progress Line -->
+                <div class="absolute top-5 left-0 right-0 h-0.5 bg-neutral-200 -z-10"></div>
+                <div id="progressLine" class="absolute top-5 left-0 h-0.5 bg-primary-600 transition-all duration-500 -z-10" style="width: 33.33%"></div>
+                
+                <!-- Step 1: Address -->
+                <div class="flex flex-col items-center gap-2 bg-neutral-50">
+                    <div class="w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <span class="text-xs font-medium text-primary-600">Address</span>
+                </div>
+                
+                <!-- Step 2: Payment -->
+                <div class="flex flex-col items-center gap-2 bg-neutral-50">
+                    <div class="w-10 h-10 rounded-full bg-neutral-200 text-neutral-500 flex items-center justify-center font-bold">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <span class="text-xs font-medium text-neutral-500">Payment</span>
+                </div>
+                
+                <!-- Step 3: Confirmation -->
+                <div class="flex flex-col items-center gap-2 bg-neutral-50">
+                    <div class="w-10 h-10 rounded-full bg-neutral-200 text-neutral-500 flex items-center justify-center font-bold">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="text-xs font-medium text-neutral-500">Confirm</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Address Form Section -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Saved Addresses -->
+                <div id="savedAddressesSection" class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6 hidden">
+                    <h2 class="text-lg font-bold text-neutral-900 mb-4">Select Delivery Address</h2>
+                    <div id="savedAddressesList" class="space-y-3">
+                        <!-- Saved addresses will be loaded here -->
+                    </div>
+                    <button id="addNewAddressBtn" class="mt-4 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add New Address
+                    </button>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <h2 class="text-lg font-bold text-neutral-900 mb-4">Contact Information</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="fullName" class="block text-sm font-medium text-neutral-700 mb-2">
+                                Full Name <span class="text-danger-500">*</span>
+                            </label>
+                            <input type="text" id="fullName" required
+                                class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-neutral-700 mb-2">
+                                Phone Number <span class="text-danger-500">*</span>
+                            </label>
+                            <input type="tel" id="phone" required pattern="[0-9]{10}"
+                                class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                placeholder="9876543210">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="email" class="block text-sm font-medium text-neutral-700 mb-2">
+                                Email Address <span class="text-danger-500">*</span>
+                            </label>
+                            <input type="email" id="email" required
+                                class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                placeholder="john@example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <h2 class="text-lg font-bold text-neutral-900 mb-4">Delivery Address</h2>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="pincode" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    PIN Code <span class="text-danger-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="pincode" required pattern="[0-9]{6}"
+                                        class="w-full h-10 rounded-md border border-neutral-200 px-3 pr-10 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                        placeholder="500001">
+                                    <button id="checkPincode" class="absolute right-2 top-1/2 -translate-y-1/2 text-primary-600 hover:text-primary-700">
+                                        <i class="fas fa-search text-sm"></i>
+                                    </button>
+                                </div>
+                                <p id="pincodeMessage" class="text-xs mt-1 hidden"></p>
+                            </div>
+                            <div>
+                                <label for="city" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    City <span class="text-danger-500">*</span>
+                                </label>
+                                <input type="text" id="city" required
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="Hyderabad">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="addressLine1" class="block text-sm font-medium text-neutral-700 mb-2">
+                                Address Line 1 (House No., Building Name) <span class="text-danger-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="addressLine1" required
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 pr-10 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="Start typing to search address...">
+                                <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm pointer-events-none"></i>
+                            </div>
+                            <p class="text-xs text-neutral-500 mt-1">Or manually enter your address</p>
+                        </div>
+
+                        <div>
+                            <label for="addressLine2" class="block text-sm font-medium text-neutral-700 mb-2">
+                                Address Line 2 (Road, Area, Colony)
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="addressLine2"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 pr-10 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="Search or enter area/locality...">
+                                <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="landmark" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    Landmark (Optional)
+                                </label>
+                                <input type="text" id="landmark"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="Near Apollo Hospital">
+                            </div>
+                            <div>
+                                <label for="state" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    State <span class="text-danger-500">*</span>
+                                </label>
+                                <select id="state" required
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all">
+                                    <option value="">Select State</option>
+                                    <option value="AP">Andhra Pradesh</option>
+                                    <option value="AR">Arunachal Pradesh</option>
+                                    <option value="AS">Assam</option>
+                                    <option value="BR">Bihar</option>
+                                    <option value="CG">Chhattisgarh</option>
+                                    <option value="GA">Goa</option>
+                                    <option value="GJ">Gujarat</option>
+                                    <option value="HR">Haryana</option>
+                                    <option value="HP">Himachal Pradesh</option>
+                                    <option value="JH">Jharkhand</option>
+                                    <option value="KA">Karnataka</option>
+                                    <option value="KL">Kerala</option>
+                                    <option value="MP">Madhya Pradesh</option>
+                                    <option value="MH">Maharashtra</option>
+                                    <option value="MN">Manipur</option>
+                                    <option value="ML">Meghalaya</option>
+                                    <option value="MZ">Mizoram</option>
+                                    <option value="NL">Nagaland</option>
+                                    <option value="OD">Odisha</option>
+                                    <option value="PB">Punjab</option>
+                                    <option value="RJ">Rajasthan</option>
+                                    <option value="SK">Sikkim</option>
+                                    <option value="TN">Tamil Nadu</option>
+                                    <option value="TG">Telangana</option>
+                                    <option value="TR">Tripura</option>
+                                    <option value="UP">Uttar Pradesh</option>
+                                    <option value="UT">Uttarakhand</option>
+                                    <option value="WB">West Bengal</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-700 mb-2">Address Type</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="addressType" value="home" checked
+                                        class="w-4 h-4 text-primary-600 focus:ring-primary-300">
+                                    <span class="text-sm text-neutral-700">Home</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="addressType" value="office"
+                                        class="w-4 h-4 text-primary-600 focus:ring-primary-300">
+                                    <span class="text-sm text-neutral-700">Office</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="addressType" value="other"
+                                        class="w-4 h-4 text-primary-600 focus:ring-primary-300">
+                                    <span class="text-sm text-neutral-700">Other</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="saveAddress"
+                                    class="w-4 h-4 text-primary-600 rounded focus:ring-primary-300">
+                                <span class="text-sm text-neutral-700">Save this address for future orders</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Address -->
+                <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-neutral-900">Billing Address</h2>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="sameAsDelivery" checked
+                                class="w-4 h-4 text-primary-600 rounded focus:ring-primary-300">
+                            <span class="text-sm text-neutral-700">Same as delivery address</span>
+                        </label>
+                    </div>
+                    
+                    <div id="billingAddressForm" class="space-y-4 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="billingName" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    Full Name <span class="text-danger-500">*</span>
+                                </label>
+                                <input type="text" id="billingName"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label for="billingPhone" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    Phone Number <span class="text-danger-500">*</span>
+                                </label>
+                                <input type="tel" id="billingPhone" pattern="[0-9]{10}"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="9876543210">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="billingAddress" class="block text-sm font-medium text-neutral-700 mb-2">
+                                Complete Address <span class="text-danger-500">*</span>
+                            </label>
+                            <textarea id="billingAddress" rows="3"
+                                class="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                placeholder="Enter complete billing address"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="billingCity" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    City <span class="text-danger-500">*</span>
+                                </label>
+                                <input type="text" id="billingCity"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="Hyderabad">
+                            </div>
+                            <div>
+                                <label for="billingState" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    State <span class="text-danger-500">*</span>
+                                </label>
+                                <select id="billingState"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all">
+                                    <option value="">Select State</option>
+                                    <option value="TG">Telangana</option>
+                                    <option value="AP">Andhra Pradesh</option>
+                                    <option value="KA">Karnataka</option>
+                                    <option value="MH">Maharashtra</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="billingPincode" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    PIN Code <span class="text-danger-500">*</span>
+                                </label>
+                                <input type="text" id="billingPincode" pattern="[0-9]{6}"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="500001">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GST Details (Optional) -->
+                <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-neutral-900">GST Details (Optional)</h2>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="needGST"
+                                class="w-4 h-4 text-primary-600 rounded focus:ring-primary-300">
+                            <span class="text-sm text-neutral-700">I need GST invoice</span>
+                        </label>
+                    </div>
+                    
+                    <div id="gstForm" class="space-y-4 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="gstNumber" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    GSTIN <span class="text-danger-500">*</span>
+                                </label>
+                                <input type="text" id="gstNumber" pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="22AAAAA0000A1Z5">
+                                <p class="text-xs text-neutral-500 mt-1">15-character GST identification number</p>
+                            </div>
+                            <div>
+                                <label for="businessName" class="block text-sm font-medium text-neutral-700 mb-2">
+                                    Business/Company Name <span class="text-danger-500">*</span>
+                                </label>
+                                <input type="text" id="businessName"
+                                    class="w-full h-10 rounded-md border border-neutral-200 px-3 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600 transition-all"
+                                    placeholder="ABC Technologies Pvt Ltd">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6 sticky top-24">
+                    <h3 class="text-lg font-bold text-neutral-900 mb-4">Order Summary</h3>
+                    
+                    <div id="orderItems" class="space-y-3 mb-4 pb-4 border-b border-neutral-200">
+                        <!-- Order items will be loaded here -->
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 bg-neutral-100 rounded-md flex items-center justify-center">
+                                <i class="fas fa-file-alt text-neutral-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-neutral-900">Loading...</p>
+                                <p class="text-xs text-neutral-500">Please wait</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-sm mb-4">
+                        <div class="flex justify-between text-neutral-600">
+                            <span>Subtotal</span>
+                            <span id="subtotal">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-neutral-600">
+                            <span>GST (18%)</span>
+                            <span id="gst">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-neutral-600">
+                            <span>Delivery Charges</span>
+                            <span id="delivery" class="text-accentA-500 font-medium">FREE</span>
+                        </div>
+                        <div class="pt-2 border-t border-neutral-200 flex justify-between font-bold text-neutral-900">
+                            <span>Total Amount</span>
+                            <span id="total" class="text-primary-600">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-accentA-100 border border-accentA-300 rounded-md p-3 mb-4">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-truck text-accentA-600 mt-0.5"></i>
+                            <div>
+                                <p class="text-xs font-medium text-accentA-700">Free Delivery</p>
+                                <p class="text-xs text-accentA-600">Orders above ₹500</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="proceedToPayment" class="w-full h-12 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-md transition-all duration-300 shadow-sm hover:shadow-md">
+                        Proceed to Payment
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+
+                    <p class="text-xs text-neutral-500 text-center mt-3">
+                        <i class="fas fa-lock mr-1"></i>
+                        Secure checkout powered by SSL
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="font-bold mb-4">Disha Digital Prints</h4>
+                    <p class="text-sm text-neutral-400">Professional printing services for all your needs.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-neutral-400">
+                        <li><a href="order.html" class="hover:text-white transition-colors">Order Now</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Track Order</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">My Account</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="space-y-2 text-sm text-neutral-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-sm text-neutral-400">
+                        <li><i class="fas fa-phone mr-2"></i>+91 98765 43210</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@dishaprints.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-neutral-700 mt-8 pt-8 text-center text-sm text-neutral-400">
+                <p>&copy; 2024 Disha Digital Prints. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-neutral-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 z-50 hidden">
+        <div class="flex items-center gap-3">
+            <i id="toastIcon" class="fas fa-check-circle text-accentA-500"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/cart-tracker.js"></script>
+    <script src="js/auth-utils.js"></script>
+    <script src="js/whatsapp-service.js"></script>
+    <script src="js/checkout-address.js"></script>
+</body>
+</html>

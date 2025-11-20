@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Disha Digital Prints Admin</title>
+    <meta name="description" content="Configure system settings, pricing, delivery zones, and business information.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Mobile Sidebar Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 w-64 bg-gray-900 text-white flex-shrink-0 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+            <div class="p-4 border-b border-gray-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold">Disha Prints</h1>
+                        <p class="text-xs text-gray-400">Admin Panel</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile -->
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+                <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-dashboard w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="admin-orders.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-shopping-cart w-5"></i>
+                    <span>Orders</span>
+                    <span id="sidebar-pending-badge" class="ml-auto bg-red-500 text-xs px-2 py-1 rounded-full">0</span>
+                </a>
+                <a href="admin-customers.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-users w-5"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="admin-production.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-industry w-5"></i>
+                    <span>Production</span>
+                </a>
+                <a href="admin-inventory.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-boxes w-5"></i>
+                    <span>Inventory</span>
+                    <span id="sidebar-low-stock-badge" class="ml-auto bg-orange-500 text-xs px-2 py-1 rounded-full hidden">0</span>
+                </a>
+                <a href="admin-cart-history.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-shopping-basket w-5"></i>
+                    <span>Cart History</span>
+                </a>
+                <a href="admin-settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white">
+                    <i class="fas fa-cog w-5"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="admin-activity.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-history w-5"></i>
+                    <span>Activity Log</span>
+                </a>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-800">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold" id="admin-name">Admin</p>
+                        <p class="text-xs text-gray-400" id="admin-phone">+91 XXXXXXXXXX</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <!-- Hamburger Menu Button -->
+                        <button onclick="toggleSidebar()" class="md:hidden text-gray-700 hover:text-gray-900">
+                            <i class="fas fa-bars text-2xl"></i>
+                        </button>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Settings & Configuration</h2>
+                        <p class="text-sm text-gray-500">Manage pricing and product options</p>
+                    </div>
+                    <button onclick="saveAllChanges()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        <i class="fas fa-save mr-2"></i>Save All Changes
+                    </button>
+                </div>
+            </header>
+
+            <!-- Settings Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Tab Navigation -->
+                <div class="bg-white rounded-lg shadow-sm mb-6">
+                    <div class="border-b border-gray-200">
+                        <nav class="flex -mb-px">
+                            <button onclick="switchTab('base-pricing')" id="tab-base-pricing" class="tab-button active">
+                                <i class="fas fa-rupee-sign mr-2"></i>Base Pricing
+                            </button>
+                            <button onclick="switchTab('documents')" id="tab-documents" class="tab-button">
+                                <i class="fas fa-file-alt mr-2"></i>Documents
+                            </button>
+                            <button onclick="switchTab('business-cards')" id="tab-business-cards" class="tab-button">
+                                <i class="fas fa-id-card mr-2"></i>Business Cards
+                            </button>
+                            <button onclick="switchTab('brochures')" id="tab-brochures" class="tab-button">
+                                <i class="fas fa-book mr-2"></i>Brochures
+                            </button>
+                            <button onclick="switchTab('payment')" id="tab-payment" class="tab-button">
+                                <i class="fas fa-credit-card mr-2"></i>Payment Settings
+                            </button>
+                            <button onclick="switchTab('whatsapp')" id="tab-whatsapp" class="tab-button">
+                                <i class="fab fa-whatsapp mr-2"></i>WhatsApp Config
+                            </button>
+                            <button onclick="switchTab('razorpay')" id="tab-razorpay" class="tab-button">
+                                <i class="fas fa-wallet mr-2"></i>Razorpay Gateway
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Base Pricing Tab -->
+                <div id="content-base-pricing" class="tab-content">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Base Pricing Configuration</h3>
+                        <div class="space-y-6" id="basePricingContainer">
+                            <p class="text-center text-gray-500 py-8">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Tab -->
+                <div id="content-documents" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Paper Sizes -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Paper Sizes</h3>
+                                <button onclick="addConfig('documents', 'paper_size')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="documents-paper_size" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Paper Types -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Paper Types</h3>
+                                <button onclick="addConfig('documents', 'paper_type')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="documents-paper_type" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Color Options -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Color Options</h3>
+                                <button onclick="addConfig('documents', 'color')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="documents-color" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Binding Options -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Binding Options</h3>
+                                <button onclick="addConfig('documents', 'binding')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="documents-binding" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Cards Tab -->
+                <div id="content-business-cards" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Materials -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Card Materials</h3>
+                                <button onclick="addConfig('business_cards', 'material')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="business_cards-material" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Finish Options -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Finish Options</h3>
+                                <button onclick="addConfig('business_cards', 'finish')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="business_cards-finish" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Corner Options -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Corner Options</h3>
+                                <button onclick="addConfig('business_cards', 'corners')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="business_cards-corners" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brochures Tab -->
+                <div id="content-brochures" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Paper Types -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Paper Types</h3>
+                                <button onclick="addConfig('brochures', 'paper_type')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="brochures-paper_type" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Finish Options -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Lamination Finish</h3>
+                                <button onclick="addConfig('brochures', 'finish')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    <i class="fas fa-plus mr-1"></i>Add
+                                </button>
+                            </div>
+                            <div id="brochures-finish" class="space-y-3">
+                                <p class="text-center text-gray-500 py-4">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Settings Tab -->
+                <div id="content-payment" class="tab-content hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-6">Payment Configuration</h3>
+                        
+                        <div class="max-w-2xl space-y-6">
+                            <!-- UPI Settings -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-mobile-alt text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">UPI Payment Settings</h4>
+                                        <p class="text-sm text-gray-600">Configure UPI ID for QR code generation</p>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">UPI ID</label>
+                                        <input type="text" id="upi_id" placeholder="yourname@paytm" 
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <p class="text-xs text-gray-500 mt-1">Enter your UPI ID (e.g., merchant@paytm, business@upi)</p>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Merchant Name</label>
+                                        <input type="text" id="merchant_name" placeholder="Disha Digital Prints" 
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <p class="text-xs text-gray-500 mt-1">Name displayed in UPI payment request</p>
+                                    </div>
+
+                                    <!-- QR Code Preview -->
+                                    <div id="qrPreviewSection" class="hidden">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">QR Code Preview</label>
+                                        <div class="border border-gray-200 rounded-lg p-6 bg-gray-50 text-center">
+                                            <img id="qrPreview" src="" alt="UPI QR Code" class="mx-auto mb-3" width="200" height="200">
+                                            <p class="text-sm text-gray-600 mb-2">Sample QR with ₹100</p>
+                                            <button onclick="generateQRPreview()" class="text-sm text-blue-600 hover:text-blue-700">
+                                                <i class="fas fa-sync-alt mr-1"></i>Refresh Preview
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Payment Settings -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-gray-900 mb-4">Additional Settings</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <label class="text-sm font-medium text-gray-700">Enable COD</label>
+                                            <p class="text-xs text-gray-500">Allow Cash on Delivery payments</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="enable_cod" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">COD Charge (₹)</label>
+                                        <input type="number" id="cod_charge" value="20" min="0" step="5"
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <p class="text-xs text-gray-500 mt-1">Additional charge for COD orders</p>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <label class="text-sm font-medium text-gray-700">Enable Store Pickup</label>
+                                            <p class="text-xs text-gray-500">Allow customers to pick up from store</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="enable_pickup" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WhatsApp Configuration Tab -->
+                <div id="content-whatsapp" class="tab-content hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">WhatsApp Business Configuration</h3>
+                                <p class="text-sm text-gray-500 mt-1">Configure WhatsApp API for OTP and admin notifications</p>
+                            </div>
+                            <button onclick="saveWhatsAppConfig()" class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
+                                <i class="fab fa-whatsapp mr-2"></i>Save Configuration
+                            </button>
+                        </div>
+
+                        <!-- API Credentials -->
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-info-circle text-blue-600 text-xl mt-1"></i>
+                                    <div class="text-sm text-blue-800">
+                                        <p class="font-semibold mb-1">Get your credentials from Meta Business Suite</p>
+                                        <p>Visit: <a href="https://business.facebook.com/wa/manage/phone-numbers/" target="_blank" class="underline">WhatsApp Business API Settings</a></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- API Configuration -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Phone Number ID <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="phone_number_id" placeholder="123456789012345"
+                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                    <p class="text-xs text-gray-500 mt-1">From Meta Business Manager</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        API Version
+                                    </label>
+                                    <select id="api_version" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                        <option value="v18.0">v18.0 (Recommended)</option>
+                                        <option value="v17.0">v17.0</option>
+                                        <option value="v19.0">v19.0</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Access Token <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="password" id="access_token" placeholder="Enter your WhatsApp Business API access token"
+                                        class="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                    <button type="button" onclick="toggleTokenVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                        <i id="token-icon" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">System access token from Meta Business Manager</p>
+                            </div>
+
+                            <!-- Phone Numbers -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Business Phone Number <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="tel" id="business_phone_number" placeholder="+919876543210"
+                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                    <p class="text-xs text-gray-500 mt-1">Your WhatsApp Business number (with country code)</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Admin Phone Number <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="tel" id="admin_phone_number" placeholder="+919876543210"
+                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                    <p class="text-xs text-gray-500 mt-1">Receive notifications on this number</p>
+                                </div>
+                            </div>
+
+                            <!-- Notification Settings -->
+                            <div class="border-t pt-6 mt-6">
+                                <h4 class="font-semibold text-gray-900 mb-4">Notification Preferences</h4>
+                                
+                                <div class="space-y-4">
+                                    <!-- Silent Notifications -->
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-900">Silent Notifications</p>
+                                            <p class="text-xs text-gray-500">Login and cart notifications without sound</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="silent_notifications" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Login Notifications -->
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-900">🔐 Login Notifications</p>
+                                            <p class="text-xs text-gray-500">Get notified when users log in</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="enable_login_notifications" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Cart Notifications -->
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-900">🛒 Cart Add Notifications</p>
+                                            <p class="text-xs text-gray-500">Get notified when items are added to cart</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="enable_cart_notifications" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Order Notifications -->
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-900">📦 Order Notifications</p>
+                                            <p class="text-xs text-gray-500">Get notified when orders are placed (with sound)</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="enable_order_notifications" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Payment Notifications -->
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-900">💳 Payment Notifications</p>
+                                            <p class="text-xs text-gray-500">Get notified about payment status (with sound)</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="enable_payment_notifications" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Test Connection -->
+                            <div class="border-t pt-6 mt-6">
+                                <button onclick="testWhatsAppConnection()" class="w-full py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                                    <i class="fas fa-plug mr-2"></i>Test WhatsApp Connection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Razorpay Gateway Tab -->
+                <div id="content-razorpay" class="tab-content hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Razorpay Payment Gateway</h3>
+                                <p class="text-sm text-gray-600">Configure Razorpay to accept online payments (UPI, Cards, Netbanking, Wallets)</p>
+                            </div>
+                            <button onclick="saveRazorpaySettings()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                                <i class="fas fa-save mr-2"></i>Save Settings
+                            </button>
+                        </div>
+
+                        <!-- Info Banner -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-info-circle text-blue-600 text-lg mt-0.5"></i>
+                                <div class="text-sm text-blue-800">
+                                    <p class="font-medium mb-1">Get Started with Razorpay</p>
+                                    <p class="mb-2">1. Create account at <a href="https://dashboard.razorpay.com/signup" target="_blank" rel="noopener" class="underline font-medium">dashboard.razorpay.com</a></p>
+                                    <p class="mb-2">2. Get your API keys from Settings → API Keys</p>
+                                    <p>3. Enable test mode for testing, then switch to live mode after KYC approval</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Configuration -->
+                        <div class="space-y-6">
+                            <!-- Enable/Disable -->
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-900">Enable Razorpay Gateway</p>
+                                    <p class="text-sm text-gray-600">Show Razorpay as payment option at checkout</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="razorpay_enabled" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+
+                            <!-- API Credentials -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Key ID -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <i class="fas fa-key mr-1"></i>Key ID (Public)
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="razorpay_key_id" placeholder="rzp_test_XXXXXXXXXXXXXX" 
+                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <p class="text-xs text-gray-500 mt-1">Starts with rzp_test_ or rzp_live_</p>
+                                </div>
+
+                                <!-- Key Secret -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <i class="fas fa-lock mr-1"></i>Key Secret (Private)
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="password" id="razorpay_key_secret" placeholder="••••••••••••••" 
+                                            class="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        <button type="button" onclick="toggleRazorpaySecretVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                            <i id="razorpay-secret-icon" class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">⚠️ Keep this secret! Never share publicly</p>
+                                </div>
+                            </div>
+
+                            <!-- Mode -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-cog mr-1"></i>Mode
+                                </label>
+                                <select id="razorpay_mode" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="test">🧪 Test Mode (For testing with test cards)</option>
+                                    <option value="live">🚀 Live Mode (Real payments, requires KYC)</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Start with test mode, switch to live after KYC approval</p>
+                            </div>
+
+                            <!-- Webhook Secret -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-shield-alt mr-1"></i>Webhook Secret (Optional but Recommended)
+                                </label>
+                                <input type="text" id="razorpay_webhook_secret" placeholder="whsec_XXXXXXXXXXXXXX" 
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <p class="text-xs text-gray-500 mt-1">Get this from Razorpay Dashboard → Settings → Webhooks</p>
+                            </div>
+
+                            <!-- Branding -->
+                            <div class="border-t pt-6 mt-6">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Checkout Branding</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Brand Name -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                            Business Name
+                                        </label>
+                                        <input type="text" id="razorpay_brand_name" value="Disha Digital Prints" 
+                                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+
+                                    <!-- Brand Color -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                            Brand Color
+                                        </label>
+                                        <div class="flex gap-2">
+                                            <input type="color" id="razorpay_brand_color" value="#1E6CE0" 
+                                                class="w-16 h-11 rounded-lg border border-gray-300">
+                                            <input type="text" id="razorpay_brand_color_hex" value="#1E6CE0" 
+                                                class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                    </div>
+
+                                    <!-- Brand Logo -->
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                            Logo URL (Optional)
+                                        </label>
+                                        <input type="url" id="razorpay_brand_logo" placeholder="https://yourdomain.com/logo.png" 
+                                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        <p class="text-xs text-gray-500 mt-1">PNG or JPG, recommended size: 256x256px</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Test Connection -->
+                            <div class="border-t pt-6 mt-6">
+                                <button onclick="testRazorpayConnection()" class="w-full py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                                    <i class="fas fa-plug mr-2"></i>Test Razorpay Connection
+                                </button>
+                            </div>
+
+                            <!-- Help Links -->
+                            <div class="border-t pt-6 mt-6">
+                                <h4 class="text-sm font-semibold text-gray-900 mb-3">📚 Useful Links</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                                    <a href="https://dashboard.razorpay.com/app/keys" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-700 underline">
+                                        <i class="fas fa-key mr-1"></i>Get API Keys
+                                    </a>
+                                    <a href="https://razorpay.com/docs/payments/" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-700 underline">
+                                        <i class="fas fa-book mr-1"></i>Documentation
+                                    </a>
+                                    <a href="https://razorpay.com/docs/payments/payments/test-card-details/" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-700 underline">
+                                        <i class="fas fa-credit-card mr-1"></i>Test Cards
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <style>
+        .tab-button {
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-button:hover {
+            color: #2563eb;
+        }
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+    </style>
+
+    <script src="js/auth-utils.js"></script>
+    <script src="js/admin-settings.js"></script>
+    <script>
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

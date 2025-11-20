@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - Disha Digital Prints</title>
+    <meta name="description" content="Track your print order status in real-time. Get updates on processing, printing, and delivery with live tracking.">
+    <meta name="keywords" content="track order, order tracking, delivery status, print job status, order updates">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dishaprints.com/track-order.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dishaprints.com/track-order.html">
+    <meta property="og:title" content="Track Your Order - Disha Digital Prints">
+    <meta property="og:description" content="Track your print order status in real-time with live updates.">
+    <meta property="og:image" content="https://dishaprints.com/images/og-track.jpg">
+    
+    <!-- Tailwind CSS with Custom Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neutral: {
+                            0: '#FFFFFF', 50: '#F9FAFB', 100: '#F2F4F7', 200: '#E5E7EB',
+                            300: '#D1D5DB', 400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563',
+                            700: '#374151', 800: '#1F2937', 900: '#111827'
+                        },
+                        primary: {
+                            50: '#EEF6FF', 100: '#D9ECFF', 200: '#B7D7FF', 300: '#8ABEFF',
+                            400: '#5AA3FF', 500: '#2F85FF', 600: '#1E6CE0', 700: '#1554B3',
+                            800: '#0E3D86', 900: '#082858'
+                        },
+                        accentA: { 100: '#EAFBF1', 300: '#7ADFA6', 500: '#22C55E', 600: '#16A34A', 700: '#16A34A' },
+                        accentB: { 100: '#FFF4E5', 300: '#FFC275', 500: '#FB923C', 700: '#EA580C' },
+                        danger: { 100: '#FEECEC', 300: '#F68A8A', 500: '#EF4444', 700: '#DC2626' },
+                        info: { 100: '#E8F5FF', 300: '#7CC5FF', 500: '#3B82F6', 700: '#2563EB' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+                    },
+                    spacing: {
+                        '1': '2px', '2': '4px', '3': '8px', '4': '12px', '5': '16px',
+                        '6': '20px', '7': '24px', '8': '32px', '9': '40px', '10': '48px'
+                    },
+                    borderRadius: {
+                        'xs': '6px', 'sm': '8px', 'md': '12px', 'lg': '16px', 'xl': '24px'
+                    },
+                    boxShadow: {
+                        'xs': '0 1px 2px rgba(16,24,40,0.06)',
+                        'sm': '0 2px 6px rgba(16,24,40,0.08)',
+                        'md': '0 8px 24px rgba(16,24,40,0.10)',
+                        'lg': '0 12px 32px rgba(16,24,40,0.12)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-neutral-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-neutral-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-print text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-neutral-900">Disha Digital Prints</span>
+                </a>
+
+                <!-- Navigation -->
+                <nav id="header-nav" class="hidden md:flex items-center gap-6">
+                    <!-- Navigation populated by header-auth.js -->
+                </nav>
+
+                <!-- User Actions -->
+                <div id="user-actions" class="flex items-center gap-4">
+                    <!-- User actions populated by header-auth.js -->
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-neutral-600 hover:text-primary-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-neutral-200">
+            <nav id="mobile-nav" class="px-4 py-3 space-y-3">
+                <!-- Mobile menu populated by header-auth.js -->
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="bg-white border-b border-neutral-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center gap-4 mb-4">
+                <a href="my-orders.html" class="text-neutral-600 hover:text-primary-600">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold text-neutral-900">Track Your Order</h1>
+                    <p class="text-sm text-neutral-600 mt-1">Real-time order status and updates</p>
+                </div>
+            </div>
+            
+            <!-- Order ID Search (Visible when no order is loaded) -->
+            <div id="searchSection" class="mt-6">
+                <div class="flex flex-col sm:flex-row gap-3 max-w-2xl">
+                    <div class="flex-1">
+                        <input type="text" id="orderIdInput" placeholder="Enter Order ID (e.g., DP2024-0145)" 
+                            class="w-full h-12 px-4 rounded-lg border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600">
+                    </div>
+                    <button id="trackBtn" class="px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                        <i class="fas fa-search mr-2"></i>Track Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Order Details Card -->
+        <div id="orderDetails" class="mb-8">
+            <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <h2 class="text-xl font-bold text-neutral-900">Order #DP2024-0145</h2>
+                            <span class="px-3 py-1 bg-info-100 text-info-700 text-xs font-semibold rounded-full">
+                                <i class="fas fa-spinner mr-1"></i>Processing
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <p class="text-sm text-neutral-500 mb-1">Order Date</p>
+                                <p class="font-semibold text-neutral-900">November 15, 2024 at 10:15 AM</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-neutral-500 mb-1">Expected Delivery</p>
+                                <p class="font-semibold text-neutral-900">November 16, 2024 at 3:00 PM</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-neutral-500 mb-1">Payment Status</p>
+                                <p class="font-semibold text-accentA-600"><i class="fas fa-check-circle mr-1"></i>Paid</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-neutral-500 mb-1">Payment Method</p>
+                                <p class="font-semibold text-neutral-900">Credit Card •••• 4242</p>
+                            </div>
+                        </div>
+
+                        <!-- Product Details -->
+                        <div class="border-t border-neutral-200 pt-4">
+                            <h3 class="font-semibold text-neutral-900 mb-3">Order Items</h3>
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-id-card text-primary-600 text-2xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-neutral-900 mb-1">Business Cards</h4>
+                                    <p class="text-sm text-neutral-600 mb-2">Premium Card • Matte Finish • 300 GSM • Rounded Corners</p>
+                                    <div class="flex flex-wrap gap-4 text-sm text-neutral-600">
+                                        <span><i class="fas fa-box mr-1 text-neutral-400"></i>Quantity: 500 cards</span>
+                                        <span><i class="fas fa-palette mr-1 text-neutral-400"></i>Both Sides Printed</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-primary-600">₹885.00</p>
+                                    <p class="text-xs text-neutral-500">Inc. GST</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact & Actions -->
+                    <div class="lg:w-64 flex flex-col gap-3">
+                        <button class="w-full px-4 py-3 bg-white border border-neutral-300 text-neutral-700 font-medium rounded-lg hover:bg-neutral-50 transition-colors">
+                            <i class="fas fa-download mr-2"></i>Download Invoice
+                        </button>
+                        <button class="w-full px-4 py-3 bg-white border border-neutral-300 text-neutral-700 font-medium rounded-lg hover:bg-neutral-50 transition-colors">
+                            <i class="fas fa-phone mr-2"></i>Contact Support
+                        </button>
+                        <button class="w-full px-4 py-3 bg-white border border-neutral-300 text-neutral-700 font-medium rounded-lg hover:bg-neutral-50 transition-colors">
+                            <i class="fas fa-redo mr-2"></i>Reorder Items
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Timeline -->
+        <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+            <h3 class="text-xl font-bold text-neutral-900 mb-6">Order Progress</h3>
+            
+            <div class="relative">
+                <!-- Progress Line -->
+                <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-neutral-200"></div>
+                <div class="absolute left-6 top-0 w-0.5 bg-primary-600 transition-all duration-500" style="height: 50%;"></div>
+                
+                <!-- Timeline Items -->
+                <div class="relative space-y-8">
+                    <!-- Order Placed - Completed -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0 relative z-10">
+                            <i class="fas fa-check text-white text-lg"></i>
+                        </div>
+                        <div class="flex-1 pt-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-semibold text-neutral-900">Order Placed</h4>
+                                <span class="text-sm text-neutral-500">Nov 15, 10:15 AM</span>
+                            </div>
+                            <p class="text-sm text-neutral-600">Your order has been received and confirmed</p>
+                        </div>
+                    </div>
+
+                    <!-- Payment Confirmed - Completed -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0 relative z-10">
+                            <i class="fas fa-check text-white text-lg"></i>
+                        </div>
+                        <div class="flex-1 pt-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-semibold text-neutral-900">Payment Confirmed</h4>
+                                <span class="text-sm text-neutral-500">Nov 15, 10:16 AM</span>
+                            </div>
+                            <p class="text-sm text-neutral-600">Payment of ₹885.00 received successfully</p>
+                        </div>
+                    </div>
+
+                    <!-- Processing - Current -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0 relative z-10 animate-pulse">
+                            <i class="fas fa-cog fa-spin text-white text-lg"></i>
+                        </div>
+                        <div class="flex-1 pt-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-semibold text-neutral-900">Processing</h4>
+                                <span class="text-sm text-info-600 font-medium">In Progress</span>
+                            </div>
+                            <p class="text-sm text-neutral-600">Your business cards are being printed</p>
+                            <div class="mt-3 bg-neutral-100 rounded-full h-2 overflow-hidden">
+                                <div class="bg-primary-600 h-full transition-all duration-500" style="width: 65%;"></div>
+                            </div>
+                            <p class="text-xs text-neutral-500 mt-2">Approximately 65% complete</p>
+                        </div>
+                    </div>
+
+                    <!-- Quality Check - Pending -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-neutral-200 rounded-full flex items-center justify-center flex-shrink-0 relative z-10">
+                            <i class="fas fa-clipboard-check text-neutral-400 text-lg"></i>
+                        </div>
+                        <div class="flex-1 pt-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-semibold text-neutral-500">Quality Check</h4>
+                                <span class="text-sm text-neutral-400">Pending</span>
+                            </div>
+                            <p class="text-sm text-neutral-400">Quality inspection before packaging</p>
+                        </div>
+                    </div>
+
+                    <!-- Ready for Pickup/Delivery - Pending -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-neutral-200 rounded-full flex items-center justify-center flex-shrink-0 relative z-10">
+                            <i class="fas fa-box-open text-neutral-400 text-lg"></i>
+                        </div>
+                        <div class="flex-1 pt-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-semibold text-neutral-500">Ready for Pickup</h4>
+                                <span class="text-sm text-neutral-400">Pending</span>
+                            </div>
+                            <p class="text-sm text-neutral-400">Will be available at Hitech City Store</p>
+                        </div>
+                    </div>
+
+                    <!-- Delivered - Pending -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-neutral-200 rounded-full flex items-center justify-center flex-shrink-0 relative z-10">
+                            <i class="fas fa-check-double text-neutral-400 text-lg"></i>
+                        </div>
+                        <div class="flex-1 pt-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-semibold text-neutral-500">Completed</h4>
+                                <span class="text-sm text-neutral-400">Pending</span>
+                            </div>
+                            <p class="text-sm text-neutral-400">Order picked up by customer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivery/Pickup Information -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <!-- Pickup Location -->
+            <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                <h3 class="text-lg font-bold text-neutral-900 mb-4">
+                    <i class="fas fa-map-marker-alt text-primary-600 mr-2"></i>Pickup Location
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="font-semibold text-neutral-900">Disha Digital Prints - Hitech City</p>
+                        <p class="text-sm text-neutral-600 mt-1">Plot No. 123, Road No. 45<br>Hitech City, Hyderabad 500081</p>
+                    </div>
+                    <div class="flex gap-2 pt-3">
+                        <button class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 transition-colors">
+                            <i class="fas fa-directions mr-1"></i>Get Directions
+                        </button>
+                        <button class="flex-1 px-4 py-2 bg-white border border-neutral-300 text-neutral-700 text-sm font-medium rounded-md hover:bg-neutral-50 transition-colors">
+                            <i class="fas fa-phone mr-1"></i>Call Store
+                        </button>
+                    </div>
+                    <div class="border-t border-neutral-200 pt-3 mt-3">
+                        <p class="text-sm text-neutral-600 mb-2"><i class="far fa-clock mr-2 text-neutral-400"></i>Store Hours</p>
+                        <p class="text-sm font-medium text-neutral-900">Mon-Sat: 9:00 AM - 8:00 PM</p>
+                        <p class="text-sm font-medium text-neutral-900">Sunday: 10:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Support -->
+            <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+                <h3 class="text-lg font-bold text-neutral-900 mb-4">
+                    <i class="fas fa-headset text-primary-600 mr-2"></i>Need Help?
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-neutral-600 mb-3">Have questions about your order? Our support team is here to help.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <a href="tel:+919876543210" class="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors">
+                            <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-phone text-primary-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-neutral-900">Call Us</p>
+                                <p class="text-sm text-neutral-600">+91 98765 43210</p>
+                            </div>
+                        </a>
+                        <a href="https://wa.me/919876543210" target="_blank" class="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors">
+                            <div class="w-10 h-10 bg-accentA-100 rounded-full flex items-center justify-center">
+                                <i class="fab fa-whatsapp text-accentA-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-neutral-900">WhatsApp</p>
+                                <p class="text-sm text-neutral-600">Chat with us</p>
+                            </div>
+                        </a>
+                        <a href="mailto:support@dishaprints.com" class="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors">
+                            <div class="w-10 h-10 bg-info-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-envelope text-info-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-neutral-900">Email</p>
+                                <p class="text-sm text-neutral-600">support@dishaprints.com</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="font-bold mb-4">Disha Digital Prints</h4>
+                    <p class="text-sm text-neutral-400">Professional printing services for all your needs.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-neutral-400">
+                        <li><a href="order.html" class="hover:text-white transition-colors">Order Now</a></li>
+                        <li><a href="my-orders.html" class="hover:text-white transition-colors">My Orders</a></li>
+                        <li><a href="my-account.html" class="hover:text-white transition-colors">My Account</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="space-y-2 text-sm text-neutral-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-sm text-neutral-400">
+                        <li><i class="fas fa-phone mr-2"></i>+91 98765 43210</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@dishaprints.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-neutral-700 mt-8 pt-8 text-center text-sm text-neutral-400">
+                <p>&copy; 2024 Disha Digital Prints. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/header-auth.js"></script>
+    <script src="js/track-order.js"></script>
+</body>
+</html>

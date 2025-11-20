@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Disha Digital Prints</title>
+    <meta name="description" content="Login to your Disha Digital Prints account to place orders, track shipments, and manage your print jobs.">
+    <meta name="keywords" content="login, sign in, customer account, disha prints login">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://dishaprints.com/login.html">
+    
+    <!-- Tailwind CSS with Custom Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neutral: {
+                            0: '#FFFFFF', 50: '#F9FAFB', 100: '#F2F4F7', 200: '#E5E7EB',
+                            300: '#D1D5DB', 400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563',
+                            700: '#374151', 800: '#1F2937', 900: '#111827'
+                        },
+                        primary: {
+                            50: '#EEF6FF', 100: '#D9ECFF', 200: '#B7D7FF', 300: '#8ABEFF',
+                            400: '#5AA3FF', 500: '#2F85FF', 600: '#1E6CE0', 700: '#1554B3',
+                            800: '#0E3D86', 900: '#082858'
+                        },
+                        accentA: { 100: '#EAFBF1', 300: '#7ADFA6', 500: '#22C55E', 600: '#16A34A', 700: '#16A34A' },
+                        accentB: { 100: '#FFF4E5', 300: '#FFC275', 500: '#FB923C', 700: '#EA580C' },
+                        danger: { 100: '#FEECEC', 300: '#F68A8A', 500: '#EF4444', 700: '#DC2626' },
+                        info: { 100: '#E8F5FF', 300: '#7CC5FF', 500: '#3B82F6', 700: '#2563EB' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase-db.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 font-sans min-h-screen flex items-center justify-center p-4">
+    <!-- Login Card -->
+    <div class="bg-white rounded-xl shadow-lg border border-neutral-200 w-full max-w-md p-8">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-print text-white text-2xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-neutral-900">Disha Digital Prints</h1>
+            <p class="text-sm text-neutral-600 mt-2" id="authModeText">Sign in to your account</p>
+            
+            <!-- Toggle between Sign In / Sign Up -->
+            <div class="mt-4 flex items-center justify-center gap-2 text-sm">
+                <span class="text-neutral-600" id="authToggleText">New user?</span>
+                <button type="button" id="authToggleBtn" class="text-primary-600 hover:text-primary-700 font-semibold underline">
+                    Create an account
+                </button>
+            </div>
+        </div>
+
+        <!-- Phone Number Step -->
+        <div id="phoneStep">
+            <form id="phoneForm" class="space-y-4">
+                <div id="nameField">
+                    <label class="block text-sm font-medium text-neutral-700 mb-2">
+                        Full Name <span class="text-danger-500">*</span>
+                    </label>
+                    <input type="text" id="fullName"
+                        placeholder="Enter your full name"
+                        class="w-full h-12 px-4 rounded-lg border border-neutral-300 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-2">
+                        Email Address <span class="text-danger-500">*</span>
+                    </label>
+                    <input type="email" id="emailAddress" required
+                        placeholder="your.email@example.com"
+                        class="w-full h-12 px-4 rounded-lg border border-neutral-300 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600">
+                    <p class="text-xs text-neutral-500 mt-1">Required for order notifications</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-2">
+                        Phone Number <span class="text-danger-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">+91</span>
+                        <input type="tel" id="phoneNumber" required
+                            placeholder="9876543210"
+                            maxlength="10"
+                            pattern="[6-9][0-9]{9}"
+                            class="w-full h-12 pl-14 pr-4 rounded-lg border border-neutral-300 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-600">
+                    </div>
+                    <p class="text-xs text-neutral-500 mt-1">We'll send an OTP to verify your number</p>
+                </div>
+
+                <button type="submit" id="sendOtpBtn" class="w-full h-12 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                    <i class="fab fa-whatsapp mr-2"></i>Send OTP via WhatsApp
+                </button>
+            </form>
+        </div>
+
+        <!-- OTP Verification Step -->
+        <div id="otpStep" class="hidden">
+            <div class="bg-accentA-50 border border-accentA-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fab fa-whatsapp text-accentA-600 text-2xl mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-accentA-900 mb-1">OTP Sent!</p>
+                        <p class="text-sm text-accentA-800">Check your WhatsApp for the 6-digit OTP sent to <strong id="sentToPhone"></strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="otpForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-2">
+                        Enter OTP <span class="text-danger-500">*</span>
+                    </label>
+                    <div class="flex gap-2 justify-center">
+                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold rounded-lg border-2 border-neutral-300 focus:border-primary-600 focus:outline-none" data-index="0">
+                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold rounded-lg border-2 border-neutral-300 focus:border-primary-600 focus:outline-none" data-index="1">
+                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold rounded-lg border-2 border-neutral-300 focus:border-primary-600 focus:outline-none" data-index="2">
+                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold rounded-lg border-2 border-neutral-300 focus:border-primary-600 focus:outline-none" data-index="3">
+                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold rounded-lg border-2 border-neutral-300 focus:border-primary-600 focus:outline-none" data-index="4">
+                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold rounded-lg border-2 border-neutral-300 focus:border-primary-600 focus:outline-none" data-index="5">
+                    </div>
+                </div>
+
+                <button type="submit" id="verifyOtpBtn" class="w-full h-12 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                    Verify & Login
+                </button>
+
+                <div class="text-center">
+                    <button type="button" id="resendOtpBtn" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                        Didn't receive? <span class="underline">Resend OTP</span>
+                    </button>
+                    <p class="text-xs text-neutral-500 mt-2">Resend available in <span id="resendTimer">30</span>s</p>
+                </div>
+
+                <button type="button" id="changeNumberBtn" class="w-full text-sm text-neutral-600 hover:text-neutral-900">
+                    <i class="fas fa-arrow-left mr-1"></i>Change Phone Number
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-neutral-200 text-center">
+            <p class="text-xs text-neutral-500">
+                By continuing, you agree to our
+                <a href="#" class="text-primary-600 hover:underline">Terms & Conditions</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/whatsapp-service.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>
