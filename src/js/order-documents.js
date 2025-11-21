@@ -101,7 +101,7 @@ fileInput.addEventListener('change', (e) => {
 function handleFiles(files) {
     let validFilesCount = 0;
 
-    files.forEach(file => {
+    files.forEach(async (file) => {
         // Validate file type
         if (!ALLOWED_TYPES[file.type]) {
             showToast(`File type not supported: ${file.name}`, 'error');
@@ -114,26 +114,69 @@ function handleFiles(files) {
             return;
         }
         
-        // Add to state
+        // Add to state with initial page count
         const fileObj = {
             id: Date.now() + Math.random(),
             file: file,
             name: file.name,
             size: formatFileSize(file.size),
-            pages: estimatePages(file),
-            type: file.type
+            pages: 0, // Will be updated after counting
+            type: file.type,
+            counting: true
         };
         
         orderState.uploadedFiles.push(fileObj);
         renderUploadedFileCard(fileObj);
         validFilesCount++;
+        
+        // Count pages accurately
+        await countPages(fileObj);
     });
     
     // Show configuration section if files uploaded
     if (validFilesCount > 0) {
-        calculateTotalPages();
         showConfigSection();
         showToast(`${validFilesCount} file(s) uploaded successfully`, 'success');
+    }
+}
+
+async function countPages(fileObj) {
+    try {
+        let pageCount = 0;
+        
+        if (fileObj.type === 'application/pdf') {
+            // Use PDF.js for accurate PDF page counting
+            const arrayBuffer = await fileObj.file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            pageCount = pdf.numPages;
+        } else if (fileObj.type.includes('word')) {
+            // Estimate Word document pages based on file size
+            // Average: ~30KB per page for .doc, ~20KB per page for .docx
+            const avgSizePerPage = fileObj.type.includes('openxmlformats') ? 20 * 1024 : 30 * 1024;
+            pageCount = Math.max(1, Math.ceil(fileObj.file.size / avgSizePerPage));
+        } else if (fileObj.type.includes('image')) {
+            // Images are 1 page each
+            pageCount = 1;
+        }
+        
+        // Update file object
+        fileObj.pages = pageCount;
+        fileObj.counting = false;
+        
+        // Update UI
+        updateFileCard(fileObj);
+        calculateTotalPages();
+        updatePriceSummary();
+        
+    } catch (error) {
+        console.error('Error counting pages:', error);
+        // Fallback to estimation
+        fileObj.pages = estimatePages(fileObj.file);
+        fileObj.counting = false;
+        updateFileCard(fileObj);
+        calculateTotalPages();
+        updatePriceSummary();
+        showToast(`Estimated page count for ${fileObj.name}`, 'info');
     }
 }
 
@@ -180,6 +223,10 @@ function renderUploadedFileCard(fileObj) {
         iconColor = 'accentA';
     }
     
+    const pageInfo = fileObj.counting 
+        ? '<span class="inline-flex items-center gap-1"><i class="fas fa-spinner fa-spin"></i> Counting pages...</span>'
+        : `${fileObj.pages} page${fileObj.pages !== 1 ? 's' : ''}`;
+    
     fileCard.innerHTML = `
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
@@ -188,7 +235,7 @@ function renderUploadedFileCard(fileObj) {
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-neutral-900">${fileObj.name}</p>
-                    <p class="text-xs text-neutral-600">${fileObj.size} • ${fileObj.pages} pages (estimated)</p>
+                    <p class="text-xs text-neutral-600 page-info">${fileObj.size} • ${pageInfo}</p>
                 </div>
             </div>
             <button class="remove-file text-neutral-500 hover:text-danger-600 transition-colors duration-${TRANSITION_FAST}" data-id="${fileObj.id}" aria-label="Remove file">
@@ -203,6 +250,17 @@ function renderUploadedFileCard(fileObj) {
     fileCard.querySelector('.remove-file').addEventListener('click', () => {
         removeFile(fileObj.id);
     });
+}
+
+function updateFileCard(fileObj) {
+    const fileCard = uploadedFilesList.querySelector(`[data-id="${fileObj.id}"]`);
+    if (!fileCard) return;
+    
+    const pageInfo = fileCard.querySelector('.page-info');
+    if (pageInfo) {
+        const pageText = `${fileObj.size} • ${fileObj.pages} page${fileObj.pages !== 1 ? 's' : ''}`;
+        pageInfo.textContent = pageText;
+    }
 }
 
 function removeFile(fileId) {
