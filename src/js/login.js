@@ -239,48 +239,69 @@ async function handleOTPSubmit(e) {
     btn.disabled = true;
     
     try {
-        // Verify OTP from Supabase database
-        const { data: otpRecords, error: otpError } = await supabaseClient
-            .from('otp_verification')
-            .select('*')
-            .eq('phone', currentPhone)
-            .eq('otp', enteredOTP)
-            .eq('verified', false)
-            .gt('expires_at', new Date().toISOString())
-            .order('created_at', { ascending: false })
-            .limit(1);
+        let isValidOTP = false;
         
-        if (otpError) {
-            debugLog('Error verifying OTP from database', otpError);
+        // In DEMO_MODE, always accept the demo OTP
+        if (DEMO_MODE && enteredOTP === DEMO_OTP) {
+            isValidOTP = true;
+            debugLog('✅ DEMO MODE: OTP accepted', { enteredOTP });
         } else {
-            debugLog('OTP database check', { found: otpRecords?.length > 0 });
-        }
-        
-        // Verify OTP (database or memory fallback)
-        const isValidOTP = (otpRecords && otpRecords.length > 0) || (enteredOTP === generatedOTP);
-        
-        debugLog('OTP validation result', { isValid: isValidOTP });
-        
-        if (isValidOTP) {
+            // Verify OTP from Supabase database
+            const { data: otpRecords, error: otpError } = await supabaseClient
+                .from('otp_verification')
+                .select('*')
+                .eq('phone', currentPhone)
+                .eq('otp', enteredOTP)
+                .eq('verified', false)
+                .gt('expires_at', new Date().toISOString())
+                .order('created_at', { ascending: false })
+                .limit(1);
+            
+            if (otpError) {
+                debugLog('Error verifying OTP from database', otpError);
+            } else {
+                debugLog('OTP database check', { found: otpRecords?.length > 0 });
+            }
+            
+            // Verify OTP (database or memory fallback)
+            isValidOTP = (otpRecords && otpRecords.length > 0) || (enteredOTP === generatedOTP);
+            
+            debugLog('OTP validation result', { isValid: isValidOTP });
+            
             // Mark OTP as verified in database
-            if (otpRecords && otpRecords.length > 0) {
+            if (isValidOTP && otpRecords && otpRecords.length > 0) {
                 await supabaseClient
                     .from('otp_verification')
                     .update({ verified: true })
                     .eq('id', otpRecords[0].id);
                 debugLog('OTP marked as verified in database');
             }
-            
+        }
+        
+        if (isValidOTP) {
             // ✅ SIMPLIFIED: Just check/create user in public.users table
             // Skip Supabase Auth for now - we'll use database sessions
             debugLog('Checking user in database', { email: currentEmail, phone: currentPhone });
             
-            const { data: existingUser, error: userError } = await supabaseClient
-                .from('users')
-                .select('*')
-                .eq('email', currentEmail)
-                .eq('phone', currentPhone)
-                .single();
+            let existingUser = null;
+            let userError = null;
+            
+            try {
+                const result = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('email', currentEmail)
+                    .eq('phone', currentPhone)
+                    .maybeSingle(); // Use maybeSingle() instead of single() to avoid error if not found
+                
+                existingUser = result.data;
+                userError = result.error;
+                
+                debugLog('User lookup result', { found: !!existingUser, error: userError });
+            } catch (err) {
+                debugLog('Error looking up user', err);
+                userError = err;
+            }
             
             let userId, userRole, userName;
             
