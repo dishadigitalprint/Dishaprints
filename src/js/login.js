@@ -386,11 +386,22 @@ async function handleOTPSubmit(e) {
             showToast('Login successful!', 'success');
             debugLog('✅ Login complete, redirecting...');
             
-            // Redirect to home or previous page
+            // Redirect based on user role
             setTimeout(() => {
-                const returnUrl = new URLSearchParams(window.location.search).get('return') || 'order.html';
-                debugLog('Redirecting to', returnUrl);
-                window.location.href = returnUrl;
+                const returnUrl = new URLSearchParams(window.location.search).get('return');
+                let redirectUrl;
+                
+                if (returnUrl) {
+                    redirectUrl = returnUrl;
+                } else if (userRole === 'admin') {
+                    redirectUrl = 'admin-dashboard.html';
+                    debugLog('Admin user detected, redirecting to admin dashboard');
+                } else {
+                    redirectUrl = 'order.html';
+                }
+                
+                debugLog('Redirecting to', redirectUrl);
+                window.location.href = redirectUrl;
             }, 1000);
             
         } else {
