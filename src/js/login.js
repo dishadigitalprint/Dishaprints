@@ -4,6 +4,9 @@
 
 // Debug logging (set to false to disable detailed logs)
 const DEBUG_MODE = true;
+// DEMO MODE: Use test OTP "123456" for any phone number (disable for production)
+const DEMO_MODE = true;
+const DEMO_OTP = '123456';
 
 function debugLog(message, data = null) {
     if (DEBUG_MODE) {
@@ -130,8 +133,8 @@ async function handlePhoneSubmit(e) {
     
     try {
         // Generate OTP
-        generatedOTP = whatsappService.generateOTP();
-        debugLog('OTP generated', { otp: generatedOTP });
+        generatedOTP = DEMO_MODE ? DEMO_OTP : whatsappService.generateOTP();
+        debugLog('OTP generated', { otp: generatedOTP, demoMode: DEMO_MODE });
         
         // Save OTP to Supabase database
         const expiresAt = new Date();
@@ -158,19 +161,32 @@ async function handlePhoneSubmit(e) {
         // Format phone for WhatsApp
         const formattedPhone = whatsappService.formatPhoneNumber(phone);
         
-        // Send OTP via WhatsApp
-        const result = await whatsappService.sendOTP(formattedPhone, generatedOTP);
+        // Send OTP via WhatsApp (skip in demo mode)
+        let result = { success: true };
+        if (!DEMO_MODE) {
+            result = await whatsappService.sendOTP(formattedPhone, generatedOTP);
+        } else {
+            debugLog('⚠️ DEMO MODE: Skipping WhatsApp API call. Use OTP: ' + DEMO_OTP);
+        }
         
         btn.innerHTML = originalText;
         btn.disabled = false;
         
         if (result.success) {
-            debugLog('OTP sent successfully via WhatsApp');
+            debugLog('OTP sent successfully' + (DEMO_MODE ? ' (DEMO MODE)' : ' via WhatsApp'));
             
             // Show OTP step
             document.getElementById('phoneStep').classList.add('hidden');
             document.getElementById('otpStep').classList.remove('hidden');
             document.getElementById('sentToPhone').textContent = `+91 ${phone}`;
+            
+            // Show demo mode message
+            if (DEMO_MODE) {
+                const demoMsg = document.createElement('div');
+                demoMsg.className = 'bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm mb-4';
+                demoMsg.innerHTML = `<strong>Demo Mode:</strong> Use OTP <strong>${DEMO_OTP}</strong> to login`;
+                document.querySelector('#otpStep .space-y-6').insertBefore(demoMsg, document.querySelector('.otp-inputs'));
+            }
             
             // Focus first OTP input
             document.querySelector('.otp-input').focus();
@@ -178,7 +194,7 @@ async function handlePhoneSubmit(e) {
             // Start resend timer
             startResendTimer();
             
-            showToast('OTP sent to your WhatsApp!', 'success');
+            showToast(DEMO_MODE ? `Demo Mode: Use OTP ${DEMO_OTP}` : 'OTP sent to your WhatsApp!', 'success');
             
             // In development/testing, show OTP in console
             debugLog('OTP for testing', generatedOTP);
