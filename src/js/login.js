@@ -287,10 +287,10 @@ async function handleOTPSubmit(e) {
             let userError = null;
             
             try {
+                // Look up user by phone number (primary identifier)
                 const result = await supabaseClient
                     .from('users')
                     .select('*')
-                    .eq('email', currentEmail)
                     .eq('phone', currentPhone)
                     .maybeSingle(); // Use maybeSingle() instead of single() to avoid error if not found
                 
@@ -298,6 +298,16 @@ async function handleOTPSubmit(e) {
                 userError = result.error;
                 
                 debugLog('User lookup result', { found: !!existingUser, error: userError });
+                
+                // If user exists, update their email if it changed
+                if (existingUser && existingUser.email !== currentEmail) {
+                    debugLog('Updating user email', { oldEmail: existingUser.email, newEmail: currentEmail });
+                    await supabaseClient
+                        .from('users')
+                        .update({ email: currentEmail })
+                        .eq('id', existingUser.id);
+                    existingUser.email = currentEmail; // Update local object
+                }
             } catch (err) {
                 debugLog('Error looking up user', err);
                 userError = err;
