@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function checkAdminAuth() {
     const user = JSON.parse(localStorage.getItem('userSession') || '{}');
-    if (!user.isAdmin) {
+    if (!user.loggedIn || user.role !== 'admin') {
         alert('Admin access required');
         window.location.href = 'login.html';
     }
