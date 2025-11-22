@@ -33,14 +33,6 @@ class CheckoutAddress {
         this.attachEventListeners();
         this.loadUserDetails();
         
-        // Initialize address autocomplete (will be called by Google API callback)
-        window.initAutocomplete = () => this.initializeAutocomplete();
-        
-        // If Google API is already loaded
-        if (window.google && window.google.maps) {
-            this.initializeAutocomplete();
-        }
-        
         // Prefill if coming back from payment
         const savedCheckoutData = sessionStorage.getItem('checkoutData');
         if (savedCheckoutData) {
@@ -520,133 +512,7 @@ class CheckoutAddress {
         }
     }
 
-    initializeAutocomplete() {
-        try {
-            const options = {
-                componentRestrictions: { country: 'in' }, // Restrict to India
-                fields: ['address_components', 'formatted_address', 'geometry', 'name'],
-                types: ['address'] // Focus on full addresses
-            };
 
-            // Initialize autocomplete for Address Line 1
-            const input1 = document.getElementById('addressLine1');
-            if (input1) {
-                this.autocomplete1 = new google.maps.places.Autocomplete(input1, options);
-                this.autocomplete1.addListener('place_changed', () => {
-                    this.handlePlaceSelect(this.autocomplete1, 'delivery');
-                });
-            }
-
-            // Initialize autocomplete for Address Line 2 (for areas/localities)
-            const input2 = document.getElementById('addressLine2');
-            if (input2) {
-                const options2 = {
-                    componentRestrictions: { country: 'in' },
-                    fields: ['address_components', 'formatted_address'],
-                    types: ['establishment', 'geocode'] // Broader search for areas
-                };
-                this.autocomplete2 = new google.maps.places.Autocomplete(input2, options2);
-                this.autocomplete2.addListener('place_changed', () => {
-                    this.handlePlaceSelect(this.autocomplete2, 'area');
-                });
-            }
-
-            console.log('Address autocomplete initialized');
-        } catch (error) {
-            console.warn('Google Places API not available, using manual input', error);
-            // Fallback: Show manual input instructions
-            this.showManualInputFallback();
-        }
-    }
-
-    handlePlaceSelect(autocomplete, type) {
-        const place = autocomplete.getPlace();
-        
-        if (!place.address_components) {
-            return;
-        }
-
-        // Extract address components
-        const addressComponents = {
-            street_number: '',
-            route: '',
-            sublocality_level_1: '',
-            sublocality_level_2: '',
-            locality: '',
-            administrative_area_level_1: '',
-            postal_code: '',
-            country: ''
-        };
-
-        place.address_components.forEach(component => {
-            const componentType = component.types[0];
-            if (addressComponents.hasOwnProperty(componentType)) {
-                addressComponents[componentType] = component.long_name;
-            }
-        });
-
-        // Auto-fill form fields based on selected place
-        if (type === 'delivery') {
-            // Fill Address Line 1 with street number and route
-            const addressLine1 = [addressComponents.street_number, addressComponents.route]
-                .filter(Boolean)
-                .join(', ') || place.name || '';
-            document.getElementById('addressLine1').value = addressLine1;
-
-            // Fill Address Line 2 with sublocality
-            const addressLine2 = [addressComponents.sublocality_level_2, addressComponents.sublocality_level_1]
-                .filter(Boolean)
-                .join(', ');
-            if (addressLine2) {
-                document.getElementById('addressLine2').value = addressLine2;
-            }
-        }
-
-        // Auto-fill City
-        if (addressComponents.locality) {
-            document.getElementById('city').value = addressComponents.locality;
-        }
-
-        // Auto-fill State
-        if (addressComponents.administrative_area_level_1) {
-            const stateMap = {
-                'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS',
-                'Bihar': 'BR', 'Chhattisgarh': 'CG', 'Goa': 'GA', 'Gujarat': 'GJ',
-                'Haryana': 'HR', 'Himachal Pradesh': 'HP', 'Jharkhand': 'JH',
-                'Karnataka': 'KA', 'Kerala': 'KL', 'Madhya Pradesh': 'MP',
-                'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML',
-                'Mizoram': 'MZ', 'Nagaland': 'NL', 'Odisha': 'OD', 'Punjab': 'PB',
-                'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN',
-                'Telangana': 'TG', 'Tripura': 'TR', 'Uttar Pradesh': 'UP',
-                'Uttarakhand': 'UT', 'West Bengal': 'WB'
-            };
-            const stateCode = stateMap[addressComponents.administrative_area_level_1];
-            if (stateCode) {
-                document.getElementById('state').value = stateCode;
-            }
-        }
-
-        // Auto-fill Pincode and trigger delivery check
-        if (addressComponents.postal_code) {
-            document.getElementById('pincode').value = addressComponents.postal_code;
-            this.checkPincode();
-        }
-
-        // Show success message
-        this.showToast('Address auto-filled successfully!', 'success');
-    }
-
-    showManualInputFallback() {
-        // Update placeholder text to indicate manual entry
-        const input1 = document.getElementById('addressLine1');
-        if (input1) {
-            input1.placeholder = 'Enter your house/building address manually';
-        }
-        const input2 = document.getElementById('addressLine2');
-        if (input2) {
-            input2.placeholder = 'Enter your area/locality manually';
-        }
-    }
 
     showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
