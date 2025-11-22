@@ -26,6 +26,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Copy CNAME to src directory
+        run: |
+          if [ -f CNAME ]; then
+            cp CNAME src/CNAME
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
