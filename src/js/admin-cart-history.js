@@ -94,22 +94,54 @@ async function loadCartHistory(silent = false) {
             showLoading();
         }
 
-        // Fetch cart abandonment data from view
-        const { data, error } = await supabase
-            .from('cart_abandonment_summary')
+        // Fetch cart history data grouped by session
+        // Get the latest cart snapshot for each session with items
+        const { data, error } = await supabaseClient
+            .from('cart_history')
             .select('*')
-            .order('last_activity', { ascending: false });
+            .in('action', ['item_added', 'item_removed', 'item_updated', 'cart_abandoned'])
+            .not('cart_snapshot', 'is', null)
+            .order('created_at', { ascending: false });
 
         if (error) throw error;
 
-        allCartHistory = data || [];
+        // Group by session_id and keep the most recent entry for each session
+        const sessionMap = new Map();
+        
+        (data || []).forEach(entry => {
+            const sessionId = entry.session_id;
+            const existing = sessionMap.get(sessionId);
+            
+            // Keep the most recent entry for each session
+            if (!existing || new Date(entry.created_at) > new Date(existing.created_at)) {
+                // Only include sessions with items in cart
+                if (entry.cart_snapshot && entry.cart_snapshot.length > 0) {
+                    sessionMap.set(sessionId, {
+                        session_id: sessionId,
+                        user_id: entry.user_id,
+                        user_name: entry.name || 'Guest',
+                        user_phone: entry.phone || 'N/A',
+                        user_email: entry.email,
+                        cart_snapshot: entry.cart_snapshot,
+                        cart_value: entry.cart_value || 0,
+                        total_items: entry.item_count || entry.cart_snapshot.length,
+                        last_activity: entry.created_at,
+                        last_action: entry.action,
+                        follow_up_status: entry.action === 'cart_abandoned' ? 'abandoned' : 'active',
+                        last_contact_date: null
+                    });
+                }
+            }
+        });
+
+        allCartHistory = Array.from(sessionMap.values());
         filterAndRender();
         updateKPIs();
         updateFilterCounts();
 
     } catch (error) {
         console.error('Error loading cart history:', error);
-        showError('Failed to load cart history');
+        showError('Failed to load cart history: ' + error.message);
     }
 }
 
