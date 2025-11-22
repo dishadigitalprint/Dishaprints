@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Configuration - Admin - Disha Digital Prints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div class="flex h-screen overflow-hidden">
+        <aside class="w-64 bg-gray-900 text-white flex-shrink-0">
+            <div class="p-6 border-b border-gray-800">
+                <h1 class="text-xl font-bold">Disha Prints Admin</h1>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="admin-orders.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-shopping-cart w-5"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="admin-customers.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-users w-5"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="admin-production.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-industry w-5"></i>
+                    <span>Production</span>
+                </a>
+                <a href="admin-inventory.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-boxes w-5"></i>
+                    <span>Inventory</span>
+                </a>
+                <a href="admin-cart-history.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-shopping-basket w-5"></i>
+                    <span>Cart History</span>
+                </a>
+                <a href="admin-users.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-user-cog w-5"></i>
+                    <span>User Management</span>
+                </a>
+                <a href="admin-pricing.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-800">
+                    <i class="fas fa-tags w-5"></i>
+                    <span>Pricing Configuration</span>
+                </a>
+                <a href="admin-settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-cog w-5"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="admin-activity.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800">
+                    <i class="fas fa-history w-5"></i>
+                    <span>Activity Log</span>
+                </a>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-800">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold" id="admin-name">Admin</p>
+                        <p class="text-xs text-gray-400" id="admin-role">Administrator</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="p-8">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900">Pricing Configuration</h2>
+                        <p class="text-gray-600 mt-1">Manage product pricing and bulk discounts</p>
+                    </div>
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div id="message" class="hidden mb-6 p-4 rounded-lg"></div>
+
+                <!-- Pricing Form -->
+                <form id="pricing-form" class="space-y-6">
+                    <!-- Print Rates -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-print text-blue-600"></i>
+                            Print Rates (Per Page)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">B&W Per Page (₹)</label>
+                                <input type="number" id="bw_per_page" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Color Per Page (₹)</label>
+                                <input type="number" id="color_per_page" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paper Quality Multipliers -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-file text-green-600"></i>
+                            Paper Quality Multipliers
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Standard (1.0x)</label>
+                                <input type="number" id="standard_paper_multiplier" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Premium (1.5x)</label>
+                                <input type="number" id="premium_paper_multiplier" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Glossy (2.0x)</label>
+                                <input type="number" id="glossy_paper_multiplier" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Binding Prices -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-book text-purple-600"></i>
+                            Binding Prices
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">No Binding (₹)</label>
+                                <input type="number" id="binding_none" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Staple Binding (₹)</label>
+                                <input type="number" id="binding_staple" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Spiral Binding (₹)</label>
+                                <input type="number" id="binding_spiral" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Perfect Binding (₹)</label>
+                                <input type="number" id="binding_perfect" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hardcover Binding (₹)</label>
+                                <input type="number" id="binding_hardcover" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cover Prices -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-layer-group text-orange-600"></i>
+                            Cover Prices
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">No Cover (₹)</label>
+                                <input type="number" id="cover_none" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Standard Cover (₹)</label>
+                                <input type="number" id="cover_standard" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Glossy Cover (₹)</label>
+                                <input type="number" id="cover_glossy" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Laminated Cover (₹)</label>
+                                <input type="number" id="cover_laminated" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Cards -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-id-card text-red-600"></i>
+                            Business Cards (Per 100 Cards)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Standard (₹)</label>
+                                <input type="number" id="business_card_standard" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Premium (₹)</label>
+                                <input type="number" id="business_card_premium" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Luxury (₹)</label>
+                                <input type="number" id="business_card_luxury" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brochures -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-book-open text-teal-600"></i>
+                            Brochures (Per Page)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">A4 Size (₹)</label>
+                                <input type="number" id="brochure_a4_per_page" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">A5 Size (₹)</label>
+                                <input type="number" id="brochure_a5_per_page" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Letter Size (₹)</label>
+                                <input type="number" id="brochure_letter_per_page" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery & Service Charges -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-truck text-indigo-600"></i>
+                            Delivery & Service Charges
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Standard Delivery (₹)</label>
+                                <input type="number" id="delivery_charge_standard" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Express Delivery (₹)</label>
+                                <input type="number" id="delivery_charge_express" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Min Order for Free Delivery (₹)</label>
+                                <input type="number" id="min_order_free_delivery" step="0.01" min="0" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tax -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-percentage text-yellow-600"></i>
+                            Tax Configuration
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">GST Percentage (%)</label>
+                                <input type="number" id="gst_percentage" step="0.01" min="0" max="100" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Discounts -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-gift text-pink-600"></i>
+                            Bulk Discounts (Percentage Off)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">50+ Pages Discount (%)</label>
+                                <input type="number" id="bulk_discount_50_pages" step="0.01" min="0" max="100" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">100+ Pages Discount (%)</label>
+                                <input type="number" id="bulk_discount_100_pages" step="0.01" min="0" max="100" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">500+ Pages Discount (%)</label>
+                                <input type="number" id="bulk_discount_500_pages" step="0.01" min="0" max="100" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4">
+                        <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save Pricing Configuration
+                        </button>
+                        <button type="button" onclick="loadPricing()" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-redo mr-2"></i>Reset to Current
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/admin-pricing.js"></script>
+</body>
+</html>
