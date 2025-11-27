@@ -63,7 +63,7 @@ const SupabaseDB = {
     async createOrder(userId, addressId, orderData, cartItems) {
         try {
             // First, insert the order
-            const { data: order, error: orderError } = await supabaseClient
+            const { data: order, error: orderError} = await supabaseClient
                 .from('orders')
                 .insert([{
                     user_id: userId,
@@ -88,18 +88,51 @@ const SupabaseDB = {
             
             console.log('✅ Order created:', order);
             
-            // Then, insert order items
-            const orderItems = cartItems.map(item => ({
-                order_id: order.id,
-                product_type: item.product || item.productType || 'unknown',
-                product_name: item.productName || 'Product',
-                configuration: item.configuration || {},
-                file_url: null, // TODO: Upload files to Supabase Storage
-                file_name: item.files ? item.files[0]?.name : null,
-                quantity: item.quantity || item.copies || 1,
-                unit_price: (item.pricing?.subtotal || item.total || 0) / (item.quantity || item.copies || 1),
-                subtotal: item.pricing?.subtotal || item.total || 0
-            }));
+            // Then, insert order items - handle both standard and multi-file items
+            const orderItems = [];
+            
+            for (const item of cartItems) {
+                if (item.type === 'multi-file-upload') {
+                    // Multi-file upload - create separate order_item for each file
+                    for (const file of item.files) {
+                        orderItems.push({
+                            order_id: order.id,
+                            product_type: 'multi-file-upload',
+                            product_name: `${item.customerName} - ${file.fileName}`,
+                            configuration: {
+                                customerName: item.customerName,
+                                jobDescription: item.jobDescription,
+                                pages: file.pages,
+                                quantity: file.quantity,
+                                printMode: file.printMode,
+                                paperQuality: file.paperQuality,
+                                binding: file.binding,
+                                cover: file.cover
+                            },
+                            file_url: file.fileUrl,
+                            file_name: file.fileName,
+                            file_size_bytes: file.fileSize || 0,
+                            quantity: file.quantity,
+                            unit_price: file.total / file.quantity,
+                            subtotal: file.total
+                        });
+                    }
+                } else {
+                    // Standard items (documents, business cards, etc.)
+                    orderItems.push({
+                        order_id: order.id,
+                        product_type: item.product || item.productType || 'unknown',
+                        product_name: item.productName || 'Product',
+                        configuration: item.configuration || {},
+                        file_url: null,
+                        file_name: null,
+                        file_size_bytes: 0,
+                        quantity: item.quantity || item.copies || 1,
+                        unit_price: (item.pricing?.subtotal || item.total || 0) / (item.quantity || item.copies || 1),
+                        subtotal: item.pricing?.subtotal || item.total || 0
+                    });
+                }
+            }
             
             const { data: items, error: itemsError } = await supabaseClient
                 .from('order_items')
@@ -108,7 +141,7 @@ const SupabaseDB = {
             
             if (itemsError) throw itemsError;
             
-            console.log('✅ Order items created:', items);
+            console.log('✅ Order items created:', items.length, 'items');
             
             return { success: true, order, items };
         } catch (error) {

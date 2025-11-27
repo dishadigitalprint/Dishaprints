@@ -241,6 +241,38 @@ class WhatsAppService {
     }
 
     /**
+     * Send order ready notification to customer
+     */
+    async sendOrderReadyNotification(orderData) {
+        try {
+            const deliveryInfo = orderData.deliveryMethod === 'pickup' 
+                ? `\n\n📍 *Pickup Location:*\nDisha Digital Prints\n${orderData.storeAddress || 'Visit our store'}\n\n⏰ Store Hours: 9 AM - 7 PM`
+                : `\n\n🚚 *Delivery:*\nYour order will be delivered soon.`;
+            
+            const message = `🎉 *Order Ready!*\n\nDear ${orderData.customerName},\n\nYour order #${orderData.orderNumber} is now ready!\n\n📦 *Order Details:*\n• Total Amount: ₹${orderData.total}\n• Items: ${orderData.itemCount} item(s)${deliveryInfo}\n\nThank you for choosing Disha Digital Prints! 🙏\n\nFor queries: ${orderData.storePhone || '9876543210'}`;
+            
+            return await this.sendTextMessage(orderData.customerPhone, message);
+        } catch (error) {
+            console.error('Error sending order ready notification:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Send order delivered notification to customer
+     */
+    async sendOrderDeliveredNotification(orderData) {
+        try {
+            const message = `✅ *Order Delivered!*\n\nDear ${orderData.customerName},\n\nYour order #${orderData.orderNumber} has been successfully delivered!\n\n📦 *Order Summary:*\n• Amount: ₹${orderData.total}\n• Delivered: ${new Date().toLocaleString('en-IN')}\n\n⭐ *Rate Us:*\nHow was your experience?\nReply with 1-5 stars\n\nThank you for choosing Disha Digital Prints! 🙏`;
+            
+            return await this.sendTextMessage(orderData.customerPhone, message);
+        } catch (error) {
+            console.error('Error sending delivery notification:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
      * Generate 6-digit OTP
      */
     generateOTP() {

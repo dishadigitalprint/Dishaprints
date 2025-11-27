@@ -71,7 +71,7 @@ class OrderUpload {
                 };
 
                 this.files.push(fileData);
-                this.renderFileRow(fileData);
+                await this.renderFileRow(fileData);
                 this.calculateFileTotal(fileData);
                 
             } catch (error) {
@@ -101,11 +101,22 @@ class OrderUpload {
         }
     }
 
-    renderFileRow(fileData) {
+    async renderFileRow(fileData) {
         const tbody = document.getElementById('filesBody');
         const row = document.createElement('tr');
         row.id = `file-${fileData.id}`;
         row.className = 'border-b border-neutral-200 hover:bg-neutral-50';
+        
+        // Calculate effective rate per page
+        const perPageRate = fileData.printMode === 'bw' 
+            ? (window.pricingService.pricing?.bw_per_page || 2)
+            : (window.pricingService.pricing?.color_per_page || 10);
+        const paperMultiplier = fileData.paperQuality === 'premium' 
+            ? (window.pricingService.pricing?.paper_quality_premium || 1.5)
+            : fileData.paperQuality === 'glossy'
+            ? (window.pricingService.pricing?.paper_quality_glossy || 1.3)
+            : (window.pricingService.pricing?.paper_quality_standard || 1.0);
+        const effectiveRate = (perPageRate * paperMultiplier).toFixed(2);
         
         row.innerHTML = `
             <td class="px-4 py-3">
@@ -136,6 +147,9 @@ class OrderUpload {
                 </select>
             </td>
             <td class="px-4 py-3 text-center">
+                <span class="text-sm font-mono text-neutral-700">₹${effectiveRate}</span>
+            </td>
+            <td class="px-4 py-3 text-left">
                 <select class="w-28 h-8 text-xs border border-neutral-200 rounded" 
                     onchange="orderUpload.updateBinding('${fileData.id}', this.value)">
                     <option value="none">None</option>
@@ -188,6 +202,26 @@ class OrderUpload {
         const file = this.files.find(f => f.id == fileId);
         if (file) {
             file.paperQuality = paper;
+            
+            // Update price per page display
+            const row = document.getElementById(`file-${fileId}`);
+            if (row) {
+                const perPageRate = file.printMode === 'bw' 
+                    ? (window.pricingService.pricing?.bw_per_page || 2)
+                    : (window.pricingService.pricing?.color_per_page || 10);
+                const paperMultiplier = paper === 'premium' 
+                    ? (window.pricingService.pricing?.paper_quality_premium || 1.5)
+                    : paper === 'glossy'
+                    ? (window.pricingService.pricing?.paper_quality_glossy || 1.3)
+                    : (window.pricingService.pricing?.paper_quality_standard || 1.0);
+                const effectiveRate = (perPageRate * paperMultiplier).toFixed(2);
+                
+                const priceCell = row.querySelector('td:nth-child(6) span');
+                if (priceCell) {
+                    priceCell.textContent = `₹${effectiveRate}`;
+                }
+            }
+            
             this.calculateFileTotal(file);
             this.updatePricingSummary();
         }
@@ -225,6 +259,22 @@ class OrderUpload {
                     printMode === 'bw' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
                 }`;
                 badge.textContent = printMode === 'bw' ? 'B&W' : 'Color';
+                
+                // Update price per page display
+                const perPageRate = printMode === 'bw' 
+                    ? (window.pricingService.pricing?.bw_per_page || 2)
+                    : (window.pricingService.pricing?.color_per_page || 10);
+                const paperMultiplier = file.paperQuality === 'premium' 
+                    ? (window.pricingService.pricing?.paper_quality_premium || 1.5)
+                    : file.paperQuality === 'glossy'
+                    ? (window.pricingService.pricing?.paper_quality_glossy || 1.3)
+                    : (window.pricingService.pricing?.paper_quality_standard || 1.0);
+                const effectiveRate = (perPageRate * paperMultiplier).toFixed(2);
+                
+                const priceCell = row.querySelector('td:nth-child(6) span');
+                if (priceCell) {
+                    priceCell.textContent = `₹${effectiveRate}`;
+                }
             }
         });
         this.updatePricingSummary();
@@ -376,21 +426,40 @@ class OrderUpload {
 
         const jobDescription = document.getElementById('jobDescription').value.trim();
 
-        // Create order data
-        const orderData = {
-            customerName,
-            jobDescription,
-            files: this.files.map(f => ({
-                fileName: f.fileName,
-                pages: f.pages,
-                quantity: f.quantity,
-                printMode: f.printMode,
-                paperQuality: f.paperQuality,
-                binding: f.binding,
-                cover: f.cover,
-                total: f.total
-            })),
-            pricing: this.pricingService.calculateOrderTotal(
+        // Show uploading progress
+        this.showToast('Uploading files to cloud storage...', 'info');
+
+        try {
+            // Upload all files to Supabase Storage
+            const uploadedFiles = [];
+            for (let i = 0; i < this.files.length; i++) {
+                const fileData = this.files[i];
+                
+                this.showToast(`Uploading ${i + 1}/${this.files.length}: ${fileData.fileName}`, 'info');
+                
+                const uploadResult = await this.uploadFileToStorage(fileData.file);
+                
+                if (!uploadResult.success) {
+                    throw new Error(`Failed to upload ${fileData.fileName}: ${uploadResult.error}`);
+                }
+                
+                uploadedFiles.push({
+                    fileName: fileData.fileName,
+                    fileUrl: uploadResult.url,
+                    filePath: uploadResult.path,
+                    fileSize: fileData.file.size,
+                    pages: fileData.pages,
+                    quantity: fileData.quantity,
+                    printMode: fileData.printMode,
+                    paperQuality: fileData.paperQuality,
+                    binding: fileData.binding,
+                    cover: fileData.cover,
+                    total: fileData.total
+                });
+            }
+
+            // Calculate pricing summary
+            const pricingSummary = this.pricingService.calculateOrderTotal(
                 this.files.map(f => ({
                     pages: f.pages,
                     quantity: f.quantity,
@@ -400,42 +469,79 @@ class OrderUpload {
                     cover: f.cover
                 })),
                 'standard'
-            ),
-            createdAt: new Date().toISOString()
-        };
+            );
 
-        try {
-            // Save order to database
-            const user = JSON.parse(localStorage.getItem('userSession') || '{}');
+            // Create cart item for multi-file order with uploaded file URLs
+            const cartItem = {
+                id: 'multi-file-' + Date.now(),
+                type: 'multi-file-upload',
+                name: `Multi-File Order: ${this.files.length} file(s)`,
+                customerName: customerName,
+                jobDescription: jobDescription,
+                files: uploadedFiles,
+                quantity: 1,
+                price: parseFloat(pricingSummary.grandTotal),
+                subtotal: parseFloat(pricingSummary.subtotal),
+                gst: parseFloat(pricingSummary.gst),
+                deliveryCharge: parseFloat(pricingSummary.deliveryCharge),
+                bulkDiscount: parseFloat(pricingSummary.bulkDiscount || 0),
+                pricingSummary: pricingSummary,
+                addedAt: new Date().toISOString()
+            };
+
+            // Get existing cart
+            const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
             
-            const { data, error } = await supabase
-                .from('orders')
-                .insert([{
-                    user_id: user.id || null,
-                    customer_name: customerName,
-                    job_description: jobDescription,
-                    order_data: orderData,
-                    status: 'pending',
-                    total_amount: parseFloat(orderData.pricing.grandTotal),
-                    created_at: orderData.createdAt
-                }])
-                .select()
-                .single();
-
-            if (error) throw error;
-
-            this.showToast('Order confirmed successfully!', 'success');
+            // Add to cart
+            cart.push(cartItem);
+            sessionStorage.setItem('cart', JSON.stringify(cart));
             
-            // Redirect to order confirmation or clear form
+            this.showToast('✅ Files uploaded! Redirecting to cart...', 'success');
+            
+            // Redirect to cart after 1.5 seconds
             setTimeout(() => {
-                this.clearAll();
-                document.getElementById('customerName').value = '';
-                document.getElementById('jobDescription').value = '';
-            }, 2000);
+                window.location.href = 'cart.html';
+            }, 1500);
 
         } catch (error) {
-            console.error('Error saving order:', error);
-            this.showToast('Error confirming order: ' + error.message, 'error');
+            console.error('Error processing order:', error);
+            this.showToast('❌ Error: ' + error.message, 'error');
+        }
+    }
+
+    async uploadFileToStorage(file) {
+        try {
+            const timestamp = Date.now();
+            const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+            const fileName = `${timestamp}-${sanitizedFileName}`;
+            const filePath = `orders/${fileName}`;
+            
+            // Upload to Supabase Storage
+            const { data, error } = await supabase.storage
+                .from('order-files')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+            
+            if (error) throw error;
+            
+            // Get public URL
+            const { data: urlData } = supabase.storage
+                .from('order-files')
+                .getPublicUrl(filePath);
+            
+            console.log('✅ File uploaded:', fileName, urlData.publicUrl);
+            
+            return { 
+                success: true, 
+                url: urlData.publicUrl,
+                path: filePath,
+                size: file.size
+            };
+        } catch (error) {
+            console.error('Upload error:', error);
+            return { success: false, error: error.message };
         }
     }
 

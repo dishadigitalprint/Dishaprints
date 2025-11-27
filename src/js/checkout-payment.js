@@ -22,9 +22,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     
     loadCartData();
-    loadDeliveryInfo();
+    loadDeliveryInfo(); // Load delivery info synchronously
     
-    // Validate delivery info exists
+    console.log('Delivery info after load:', deliveryInfo);
+    
+    // Validate delivery info exists AFTER loading
     if (!validateDeliveryInfo()) {
         return; // Will redirect to address page
     }
@@ -74,11 +76,25 @@ function checkAuthentication() {
 }
 
 function validateDeliveryInfo() {
-    if (!deliveryInfo || !deliveryInfo.name || !deliveryInfo.address) {
+    console.log('Validating delivery info:', deliveryInfo);
+    
+    // Check if deliveryInfo exists and has any meaningful content
+    if (!deliveryInfo || Object.keys(deliveryInfo).length === 0) {
+        console.log('No delivery info found - empty or missing');
         alert('Please provide delivery address before payment');
         window.location.href = 'checkout-address.html';
         return false;
     }
+    
+    // Check if it has the required nested structure from checkout-address
+    if (!deliveryInfo.contact || !deliveryInfo.delivery) {
+        console.log('Missing contact or delivery fields');
+        alert('Please provide delivery address before payment');
+        window.location.href = 'checkout-address.html';
+        return false;
+    }
+    
+    console.log('✓ Delivery info validated successfully');
     return true;
 }
 
@@ -156,18 +172,37 @@ function renderCartSummary() {
     const container = document.getElementById('cartSummary');
     if (!container || cart.length === 0) return;
 
-    container.innerHTML = cart.map(item => `
-        <div class="flex items-start gap-3">
-            <div class="w-10 h-10 bg-primary-50 rounded flex items-center justify-center flex-shrink-0">
-                <i class="fas ${getProductIcon(item.product)} text-primary-600"></i>
+    container.innerHTML = cart.map(item => {
+        // Handle multi-file upload items
+        if (item.type === 'multi-file-upload') {
+            return `
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 bg-primary-50 rounded flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-file-pdf text-primary-600"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-neutral-900 truncate">${item.name}</p>
+                        <p class="text-xs text-neutral-600">${item.files.length} file(s)</p>
+                    </div>
+                    <p class="text-sm font-semibold text-neutral-900">₹${(item.price || 0).toFixed(2)}</p>
+                </div>
+            `;
+        }
+        
+        // Handle standard items
+        return `
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-primary-50 rounded flex items-center justify-center flex-shrink-0">
+                    <i class="fas ${getProductIcon(item.product)} text-primary-600"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-neutral-900 truncate">${item.productName}</p>
+                    <p class="text-xs text-neutral-600">Qty: ${item.quantity}</p>
+                </div>
+                <p class="text-sm font-semibold text-neutral-900">₹${(item.total || 0).toFixed(2)}</p>
             </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-neutral-900 truncate">${item.productName}</p>
-                <p class="text-xs text-neutral-600">Qty: ${item.quantity}</p>
-            </div>
-            <p class="text-sm font-semibold text-neutral-900">₹${item.total.toFixed(2)}</p>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function getProductIcon(product) {
@@ -180,7 +215,14 @@ function getProductIcon(product) {
 }
 
 function updatePricing() {
-    const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
+    // Calculate subtotal - handle both standard and multi-file items
+    const subtotal = cart.reduce((sum, item) => {
+        if (item.type === 'multi-file-upload') {
+            return sum + (item.subtotal || 0);
+        }
+        return sum + (item.total || 0);
+    }, 0);
+    
     const gst = subtotal * 0.05; // 5% GST
     const deliveryCharge = deliveryInfo.deliveryMethod === 'delivery' ? 50 : 0;
     const codCharge = selectedPaymentMethod === 'cod' ? paymentSettings.cod_charge : 0;

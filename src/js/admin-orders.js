@@ -62,6 +62,229 @@ function getPaymentBadge(status) {
     return badges[status] || 'bg-gray-100 text-gray-800';
 }
 
+// Render order items - handles both old order_items and new order_data structures
+function renderOrderItems(order) {
+    // Check if this is a multi-file upload order with order_data in customer_notes
+    if (order.customer_notes) {
+        try {
+            const orderData = JSON.parse(order.customer_notes);
+            
+            // Check if orderData has files array (new multi-file upload format)
+            if (orderData.files && Array.isArray(orderData.files)) {
+                const files = orderData.files;
+                const summary = orderData.pricingSummary || {};
+                
+                return `
+                    <div class="space-y-4">
+                        <!-- Customer Info from order_data -->
+                        ${orderData.customerName || orderData.jobDescription ? `
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                ${orderData.customerName ? `<p><strong>Customer Name:</strong> ${orderData.customerName}</p>` : ''}
+                                ${orderData.jobDescription ? `<p><strong>Job Description:</strong> ${orderData.jobDescription}</p>` : ''}
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Files Table -->
+                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-3 py-2 text-left font-semibold text-gray-900">File Name</th>
+                                        <th class="px-3 py-2 text-center font-semibold text-gray-900">Pages</th>
+                                        <th class="px-3 py-2 text-center font-semibold text-gray-900">Qty</th>
+                                        <th class="px-3 py-2 text-center font-semibold text-gray-900">Mode</th>
+                                        <th class="px-3 py-2 text-center font-semibold text-gray-900">Paper</th>
+                                        <th class="px-3 py-2 text-left font-semibold text-gray-900">Binding</th>
+                                        <th class="px-3 py-2 text-left font-semibold text-gray-900">Cover</th>
+                                        <th class="px-3 py-2 text-right font-semibold text-gray-900">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    ${files.map(file => `
+                                        <tr>
+                                            <td class="px-3 py-2">
+                                                <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+                                                <span class="font-medium">${file.name}</span>
+                                            </td>
+                                            <td class="px-3 py-2 text-center">${file.pages}</td>
+                                            <td class="px-3 py-2 text-center">${file.quantity}</td>
+                                            <td class="px-3 py-2 text-center">
+                                                <span class="px-2 py-1 text-xs rounded ${
+                                                    file.printMode === 'bw' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                                                }">${file.printMode === 'bw' ? 'B&W' : 'Color'}</span>
+                                            </td>
+                                            <td class="px-3 py-2 text-center capitalize">${file.paperQuality}</td>
+                                            <td class="px-3 py-2 capitalize">${file.binding}</td>
+                                            <td class="px-3 py-2 capitalize">${file.cover}</td>
+                                            <td class="px-3 py-2 text-right font-semibold">${formatCurrency(file.total)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pricing Summary -->
+                        <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Subtotal:</span>
+                                <span class="font-semibold">${formatCurrency(summary.subtotal || order.subtotal || 0)}</span>
+                            </div>
+                            ${summary.bulkDiscount > 0 ? `
+                                <div class="flex justify-between text-sm text-green-600">
+                                    <span>Bulk Discount:</span>
+                                    <span class="font-semibold">-${formatCurrency(summary.bulkDiscount)}</span>
+                                </div>
+                            ` : ''}
+                            <div class="flex justify-between text-sm">
+                                <span>GST (${summary.gstRate || 18}%):</span>
+                                <span class="font-semibold">${formatCurrency(summary.gst || order.gst || 0)}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Delivery:</span>
+                                <span class="font-semibold ${summary.deliveryCharge === 0 ? 'text-green-600' : ''}">
+                                    ${summary.deliveryCharge === 0 ? 'FREE' : formatCurrency(summary.deliveryCharge || order.delivery_charge || 0)}
+                                </span>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold border-t border-gray-300 pt-2 mt-2">
+                                <span>Grand Total:</span>
+                                <span>${formatCurrency(summary.grandTotal || order.total)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        } catch (e) {
+            console.error('Error parsing customer_notes JSON:', e);
+        }
+    }
+    
+    // Check old order_data field (if it exists)
+    if (order.order_data && typeof order.order_data === 'object') {
+        const orderData = order.order_data;
+        
+        // Check if order_data has files array (new multi-file upload format)
+        if (orderData.files && Array.isArray(orderData.files)) {
+            const files = orderData.files;
+            const summary = orderData.pricingSummary || {};
+            
+            return `
+                <div class="space-y-4">
+                    <!-- Customer Info from order_data -->
+                    ${orderData.customerName || orderData.jobDescription ? `
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            ${orderData.customerName ? `<p><strong>Customer Name:</strong> ${orderData.customerName}</p>` : ''}
+                            ${orderData.jobDescription ? `<p><strong>Job Description:</strong> ${orderData.jobDescription}</p>` : ''}
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Files Table -->
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-3 py-2 text-left font-semibold text-gray-900">File Name</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-gray-900">Pages</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-gray-900">Qty</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-gray-900">Mode</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-gray-900">Paper</th>
+                                    <th class="px-3 py-2 text-left font-semibold text-gray-900">Binding</th>
+                                    <th class="px-3 py-2 text-left font-semibold text-gray-900">Cover</th>
+                                    <th class="px-3 py-2 text-right font-semibold text-gray-900">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${files.map(file => `
+                                    <tr>
+                                        <td class="px-3 py-2">
+                                            <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+                                            <span class="font-medium">${file.name}</span>
+                                        </td>
+                                        <td class="px-3 py-2 text-center">${file.pages}</td>
+                                        <td class="px-3 py-2 text-center">${file.quantity}</td>
+                                        <td class="px-3 py-2 text-center">
+                                            <span class="px-2 py-1 text-xs rounded ${
+                                                file.printMode === 'bw' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                                            }">${file.printMode === 'bw' ? 'B&W' : 'Color'}</span>
+                                        </td>
+                                        <td class="px-3 py-2 text-center capitalize">${file.paperQuality}</td>
+                                        <td class="px-3 py-2 capitalize">${file.binding}</td>
+                                        <td class="px-3 py-2 capitalize">${file.cover}</td>
+                                        <td class="px-3 py-2 text-right font-semibold">${formatCurrency(file.total)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pricing Summary -->
+                    <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Subtotal:</span>
+                            <span class="font-semibold">${formatCurrency(summary.subtotal || 0)}</span>
+                        </div>
+                        ${summary.bulkDiscount > 0 ? `
+                            <div class="flex justify-between text-sm text-green-600">
+                                <span>Bulk Discount:</span>
+                                <span class="font-semibold">-${formatCurrency(summary.bulkDiscount)}</span>
+                            </div>
+                        ` : ''}
+                        <div class="flex justify-between text-sm">
+                            <span>GST (${summary.gstRate || 18}%):</span>
+                            <span class="font-semibold">${formatCurrency(summary.gst || 0)}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Delivery:</span>
+                            <span class="font-semibold ${summary.deliveryCharge === 0 ? 'text-green-600' : ''}">
+                                ${summary.deliveryCharge === 0 ? 'FREE' : formatCurrency(summary.deliveryCharge)}
+                            </span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold border-t border-gray-300 pt-2 mt-2">
+                            <span>Grand Total:</span>
+                            <span>${formatCurrency(summary.grandTotal || order.total_amount)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Fallback to old order_items format
+    if (order.order_items && order.order_items.length > 0) {
+        return `
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900">Product</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-900">Quantity</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900">Price</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        ${order.order_items.map(item => `
+                            <tr>
+                                <td class="px-4 py-3 text-sm">${item.product_name}</td>
+                                <td class="px-4 py-3 text-sm text-center">${item.quantity}</td>
+                                <td class="px-4 py-3 text-sm text-right">${formatCurrency(item.unit_price)}</td>
+                                <td class="px-4 py-3 text-sm text-right font-semibold">${formatCurrency(item.total_price)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot class="bg-gray-50">
+                        <tr>
+                            <td colspan="3" class="px-4 py-3 text-right text-sm font-semibold">Total:</td>
+                            <td class="px-4 py-3 text-right text-lg font-bold">${formatCurrency(order.total_amount)}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        `;
+    }
+    
+    return '<p class="text-gray-500 text-center py-4">No order items found</p>';
+}
+
 // Load all orders
 async function loadOrders() {
     try {
@@ -200,34 +423,7 @@ async function viewOrder(orderId) {
                 <!-- Order Items -->
                 <div>
                     <h4 class="font-bold text-gray-900 mb-3">Order Items</h4>
-                    <div class="border border-gray-200 rounded-lg overflow-hidden">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900">Product</th>
-                                    <th class="px-4 py-3 text-center text-sm font-semibold text-gray-900">Quantity</th>
-                                    <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900">Price</th>
-                                    <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                ${order.order_items.map(item => `
-                                    <tr>
-                                        <td class="px-4 py-3 text-sm">${item.product_name}</td>
-                                        <td class="px-4 py-3 text-sm text-center">${item.quantity}</td>
-                                        <td class="px-4 py-3 text-sm text-right">${formatCurrency(item.unit_price)}</td>
-                                        <td class="px-4 py-3 text-sm text-right font-semibold">${formatCurrency(item.total_price)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                            <tfoot class="bg-gray-50">
-                                <tr>
-                                    <td colspan="3" class="px-4 py-3 text-right text-sm font-semibold">Total:</td>
-                                    <td class="px-4 py-3 text-right text-lg font-bold">${formatCurrency(order.total_amount)}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                    ${renderOrderItems(order)}
                 </div>
 
                 <!-- Order Status -->

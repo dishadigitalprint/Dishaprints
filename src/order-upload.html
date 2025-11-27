@@ -89,6 +89,30 @@
             </div>
         </div>
 
+        <!-- Pricing Information Banner -->
+        <div class="bg-gradient-to-r from-primary-50 to-blue-50 rounded-lg border border-primary-200 p-4 mb-6">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-info-circle text-primary-600 text-xl mt-1"></i>
+                <div class="flex-1">
+                    <h3 class="text-sm font-bold text-neutral-900 mb-2">💰 Current Pricing</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div>
+                            <span class="font-semibold text-neutral-700">Print Rates:</span>
+                            <span class="text-neutral-600"> B&W: ₹<span id="bwRate">2</span>/page | Color: ₹<span id="colorRate">10</span>/page</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-neutral-700">Binding:</span>
+                            <span class="text-neutral-600"> Staple: ₹<span id="bindingStaple">10</span> | Spiral: ₹<span id="bindingSpiral">50</span> | Perfect: ₹<span id="bindingPerfect">100</span></span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-neutral-700">Bulk Discounts:</span>
+                            <span class="text-neutral-600"> 50+ (<span id="discount50">5</span>%) | 100+ (<span id="discount100">10</span>%) | 500+ (<span id="discount500">15</span>%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Upload Section -->
         <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
@@ -127,6 +151,7 @@
                             <th class="px-4 py-3 text-center text-xs font-semibold text-neutral-700 uppercase">Qty</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-neutral-700 uppercase">Mode</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-neutral-700 uppercase">Paper</th>
+                            <th class="px-4 py-3 text-center text-xs font-semibold text-neutral-700 uppercase">₹/Page</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-neutral-700 uppercase">Binding</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-neutral-700 uppercase">Cover</th>
                             <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-700 uppercase">Total</th>
@@ -135,7 +160,7 @@
                     </thead>
                     <tbody id="filesBody">
                         <tr id="emptyState">
-                            <td colspan="9" class="px-4 py-12 text-center text-neutral-500">
+                            <td colspan="10" class="px-4 py-12 text-center text-neutral-500">
                                 <i class="fas fa-file-pdf text-4xl text-neutral-300 mb-3"></i>
                                 <p>No files uploaded yet. Click "Upload PDFs" to begin.</p>
                             </td>
@@ -200,6 +225,8 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/pricing-service.js"></script>
     <script src="js/order-upload.js"></script>

@@ -85,7 +85,7 @@ const CartTracker = {
             }
 
             // Save to database
-            const { data, error } = await supabaseClient
+            const { data, error } = await supabase
                 .from('cart_history')
                 .insert([activityData]);
 

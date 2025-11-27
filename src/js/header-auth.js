@@ -55,6 +55,9 @@ class AuthHeader {
                 <a href="order.html" class="text-sm font-medium text-neutral-700 hover:text-primary-600 transition-colors duration-200">
                     <i class="fas fa-plus-circle mr-1"></i>Browse Products
                 </a>
+                <a href="order-upload.html" class="text-sm font-medium text-neutral-700 hover:text-primary-600 transition-colors duration-200">
+                    <i class="fas fa-file-upload mr-1"></i>Multi-File Upload
+                </a>
                 <a href="track-order.html" class="text-sm font-medium text-neutral-700 hover:text-primary-600 transition-colors duration-200">
                     <i class="fas fa-truck mr-1"></i>Track Order
                 </a>
@@ -82,6 +85,9 @@ class AuthHeader {
         const userNav = `
             <a href="order.html" class="text-sm font-medium text-neutral-700 hover:text-primary-600 transition-colors duration-200">
                 <i class="fas fa-plus-circle mr-1"></i>New Order
+            </a>
+            <a href="order-upload.html" class="text-sm font-medium text-neutral-700 hover:text-primary-600 transition-colors duration-200">
+                <i class="fas fa-file-upload mr-1"></i>Multi-File Upload
             </a>
             <a href="my-orders.html" class="text-sm font-medium text-neutral-700 hover:text-primary-600 transition-colors duration-200">
                 <i class="fas fa-list mr-1"></i>My Orders
@@ -126,6 +132,9 @@ class AuthHeader {
                     <a href="order.html" class="block text-sm text-neutral-700 hover:text-primary-600 font-medium py-2">
                         <i class="fas fa-plus-circle mr-2"></i>Browse Products
                     </a>
+                    <a href="order-upload.html" class="block text-sm text-neutral-700 hover:text-primary-600 font-medium py-2">
+                        <i class="fas fa-file-upload mr-2"></i>Multi-File Upload
+                    </a>
                     <a href="track-order.html" class="block text-sm text-neutral-700 hover:text-primary-600 font-medium py-2">
                         <i class="fas fa-truck mr-2"></i>Track Order
                     </a>
@@ -144,6 +153,9 @@ class AuthHeader {
                 const userMobileNav = `
                     <a href="order.html" class="block text-sm text-neutral-700 hover:text-primary-600 font-medium py-2">
                         <i class="fas fa-plus-circle mr-2"></i>New Order
+                    </a>
+                    <a href="order-upload.html" class="block text-sm text-neutral-700 hover:text-primary-600 font-medium py-2">
+                        <i class="fas fa-file-upload mr-2"></i>Multi-File Upload
                     </a>
                     <a href="my-orders.html" class="block text-sm text-neutral-700 hover:text-primary-600 font-medium py-2">
                         <i class="fas fa-list mr-2"></i>My Orders

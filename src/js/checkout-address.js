@@ -184,26 +184,30 @@ class CheckoutAddress {
             // In production, use: https://api.postalpincode.in/pincode/{pincode}
             await new Promise(resolve => setTimeout(resolve, 500));
             
-            // Mock response
+            // Mock response - Accept all pincodes for now
             const mockCities = {
-                '500001': { city: 'Hyderabad', state: 'TG', deliverable: true },
-                '500002': { city: 'Hyderabad', state: 'TG', deliverable: true },
-                '560001': { city: 'Bangalore', state: 'KA', deliverable: true },
-                '400001': { city: 'Mumbai', state: 'MH', deliverable: true },
+                '500001': { city: 'Hyderabad', state: 'Telangana', deliverable: true },
+                '500002': { city: 'Hyderabad', state: 'Telangana', deliverable: true },
+                '560001': { city: 'Bangalore', state: 'Karnataka', deliverable: true },
+                '400001': { city: 'Mumbai', state: 'Maharashtra', deliverable: true },
+                '110001': { city: 'Delhi', state: 'Delhi', deliverable: true },
+                '600001': { city: 'Chennai', state: 'Tamil Nadu', deliverable: true },
+                '700001': { city: 'Kolkata', state: 'West Bengal', deliverable: true },
             };
 
+            // Default: Accept all pincodes as deliverable
             const result = mockCities[pincode] || { 
-                city: 'Unknown', 
+                city: '', 
                 state: '', 
-                deliverable: Math.random() > 0.3 // 70% deliverable
+                deliverable: true // Always deliverable
             };
 
             if (result.deliverable) {
                 messageEl.textContent = '✓ Delivery available in 3-5 business days';
                 messageEl.className = 'text-xs mt-1 text-accentA-600';
                 
-                // Auto-fill city and state
-                if (result.city !== 'Unknown') {
+                // Auto-fill city and state if available
+                if (result.city) {
                     document.getElementById('city').value = result.city;
                     document.getElementById('state').value = result.state;
                 }
@@ -232,6 +236,24 @@ class CheckoutAddress {
         };
 
         orderItemsEl.innerHTML = this.cart.map(item => {
+            // Handle multi-file upload items
+            if (item.type === 'multi-file-upload') {
+                return `
+                    <div class="flex items-start gap-3 pb-3 border-b border-neutral-200 last:border-0">
+                        <div class="w-12 h-12 bg-primary-50 rounded-md flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-file-pdf text-primary-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-neutral-900">${item.name}</p>
+                            <p class="text-xs text-neutral-500 mt-0.5">${item.customerName}</p>
+                            <p class="text-xs text-neutral-500">${item.files.length} file(s)</p>
+                            <p class="text-sm font-bold text-primary-600 mt-1">₹${(item.price || 0).toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Handle standard items
             const qty = item.quantity || item.copies || item.configuration?.quantity || 1;
             const details = this.getItemDetails(item);
             
@@ -244,7 +266,7 @@ class CheckoutAddress {
                         <p class="text-sm font-medium text-neutral-900 truncate">${item.productName}</p>
                         <p class="text-xs text-neutral-500 mt-0.5">${details}</p>
                         <p class="text-xs text-neutral-500">Qty: ${qty}</p>
-                        <p class="text-sm font-bold text-primary-600 mt-1">₹${item.total.toFixed(2)}</p>
+                        <p class="text-sm font-bold text-primary-600 mt-1">₹${(item.total || 0).toFixed(2)}</p>
                     </div>
                 </div>
             `;
@@ -277,7 +299,14 @@ class CheckoutAddress {
     }
 
     updatePricingSummary() {
-        const subtotal = this.cart.reduce((sum, item) => sum + item.total, 0);
+        // Calculate subtotal handling both standard items and multi-file items
+        const subtotal = this.cart.reduce((sum, item) => {
+            if (item.type === 'multi-file-upload') {
+                return sum + (item.subtotal || 0);
+            }
+            return sum + (item.total || 0);
+        }, 0);
+        
         const gst = subtotal * 0.18;
         const deliveryCharge = subtotal >= this.minOrderForFreeDelivery ? 0 : this.standardDeliveryCharge;
         const total = subtotal + gst + deliveryCharge;
@@ -456,8 +485,14 @@ class CheckoutAddress {
 
         const checkoutData = this.collectFormData();
         
-        // Calculate final pricing
-        const subtotal = this.cart.reduce((sum, item) => sum + item.total, 0);
+        // Calculate final pricing - handle both standard and multi-file items
+        const subtotal = this.cart.reduce((sum, item) => {
+            if (item.type === 'multi-file-upload') {
+                return sum + (item.subtotal || 0);
+            }
+            return sum + (item.total || 0);
+        }, 0);
+        
         const gst = subtotal * 0.18;
         const deliveryCharge = subtotal >= this.minOrderForFreeDelivery ? 0 : this.standardDeliveryCharge;
         const total = subtotal + gst + deliveryCharge;

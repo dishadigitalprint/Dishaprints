@@ -46,52 +46,122 @@ function renderCart() {
 
     container.innerHTML = cart.map((item, index) => `
         <div class="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-            <div class="flex flex-col sm:flex-row gap-4">
-                <!-- Product Icon -->
-                <div class="w-16 h-16 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas ${getProductIcon(item.product)} text-primary-600 text-2xl"></i>
+            ${item.type === 'multi-file-upload' ? renderMultiFileItem(item, index) : renderStandardItem(item, index)}
+        </div>
+    `).join('');
+}
+
+function renderMultiFileItem(item, index) {
+    return `
+        <div class="flex flex-col gap-4">
+            <!-- Header -->
+            <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-16 h-16 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-file-pdf text-primary-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-neutral-900">${item.name}</h3>
+                        <p class="text-sm text-neutral-600">${item.customerName}</p>
+                        ${item.jobDescription ? `<p class="text-xs text-neutral-500">${item.jobDescription}</p>` : ''}
+                    </div>
+                </div>
+                <button onclick="removeItem(${index})" class="text-danger-600 hover:text-danger-700 p-2">
+                    <i class="fas fa-trash text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Files Summary -->
+            <div class="bg-neutral-50 rounded-lg p-4">
+                <h4 class="text-sm font-semibold text-neutral-900 mb-2">Files Included:</h4>
+                <div class="space-y-1 max-h-32 overflow-y-auto">
+                    ${item.files.map(f => `
+                        <div class="text-xs text-neutral-700 flex items-center justify-between">
+                            <span><i class="fas fa-file-pdf text-danger-500 mr-2"></i>${f.fileName}</span>
+                            <span class="text-neutral-500">${f.pages} pages • ${f.quantity} copies • ${f.printMode === 'bw' ? 'B&W' : 'Color'}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Pricing Breakdown -->
+            <div class="bg-blue-50 rounded-lg p-4 space-y-2">
+                <div class="flex justify-between text-sm">
+                    <span class="text-neutral-600">Subtotal:</span>
+                    <span class="font-semibold">₹${item.subtotal.toFixed(2)}</span>
+                </div>
+                ${item.bulkDiscount > 0 ? `
+                    <div class="flex justify-between text-sm text-green-600">
+                        <span>Bulk Discount:</span>
+                        <span class="font-semibold">-₹${item.bulkDiscount.toFixed(2)}</span>
+                    </div>
+                ` : ''}
+                <div class="flex justify-between text-sm">
+                    <span class="text-neutral-600">GST:</span>
+                    <span class="font-semibold">₹${item.gst.toFixed(2)}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-neutral-600">Delivery:</span>
+                    <span class="font-semibold ${item.deliveryCharge === 0 ? 'text-green-600' : ''}">
+                        ${item.deliveryCharge === 0 ? 'FREE' : '₹' + item.deliveryCharge.toFixed(2)}
+                    </span>
+                </div>
+                <div class="flex justify-between text-lg font-bold border-t border-neutral-200 pt-2 mt-2">
+                    <span>Total:</span>
+                    <span class="text-primary-600">₹${item.price.toFixed(2)}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderStandardItem(item, index) {
+    return `
+        <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Product Icon -->
+            <div class="w-16 h-16 bg-primary-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas ${getProductIcon(item.product)} text-primary-600 text-2xl"></i>
+            </div>
+
+            <!-- Product Details -->
+            <div class="flex-1">
+                <div class="flex items-start justify-between mb-2">
+                    <div>
+                        <h3 class="text-lg font-bold text-neutral-900">${item.productName}</h3>
+                        <p class="text-sm text-neutral-600">${getItemDetails(item)}</p>
+                    </div>
+                    <button onclick="removeItem(${index})" class="text-danger-600 hover:text-danger-700 p-2">
+                        <i class="fas fa-trash text-lg"></i>
+                    </button>
                 </div>
 
-                <!-- Product Details -->
-                <div class="flex-1">
-                    <div class="flex items-start justify-between mb-2">
-                        <div>
-                            <h3 class="text-lg font-bold text-neutral-900">${item.productName}</h3>
-                            <p class="text-sm text-neutral-600">${getItemDetails(item)}</p>
-                        </div>
-                        <button onclick="removeItem(${index})" class="text-danger-600 hover:text-danger-700 p-2">
-                            <i class="fas fa-trash text-lg"></i>
-                        </button>
-                    </div>
+                <!-- Configuration Details -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    ${getConfigDetails(item)}
+                </div>
 
-                    <!-- Configuration Details -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                        ${getConfigDetails(item)}
+                <!-- Quantity and Price -->
+                <div class="flex items-center justify-between pt-4 border-t border-neutral-200">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-neutral-600">Quantity:</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="decreaseQuantity(${index})" class="w-8 h-8 bg-neutral-100 hover:bg-neutral-200 rounded-md flex items-center justify-center">
+                                <i class="fas fa-minus text-xs text-neutral-600"></i>
+                            </button>
+                            <span class="w-12 text-center font-semibold text-neutral-900">${item.quantity || item.copies || 1}</span>
+                            <button onclick="increaseQuantity(${index})" class="w-8 h-8 bg-neutral-100 hover:bg-neutral-200 rounded-md flex items-center justify-center">
+                                <i class="fas fa-plus text-xs text-neutral-600"></i>
+                            </button>
+                        </div>
                     </div>
-
-                    <!-- Quantity and Price -->
-                    <div class="flex items-center justify-between pt-4 border-t border-neutral-200">
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm text-neutral-600">Quantity:</span>
-                            <div class="flex items-center gap-2">
-                                <button onclick="decreaseQuantity(${index})" class="w-8 h-8 bg-neutral-100 hover:bg-neutral-200 rounded-md flex items-center justify-center">
-                                    <i class="fas fa-minus text-xs text-neutral-600"></i>
-                                </button>
-                                <span class="w-12 text-center font-semibold text-neutral-900">${item.quantity || item.copies || 1}</span>
-                                <button onclick="increaseQuantity(${index})" class="w-8 h-8 bg-neutral-100 hover:bg-neutral-200 rounded-md flex items-center justify-center">
-                                    <i class="fas fa-plus text-xs text-neutral-600"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-2xl font-bold text-primary-600">₹${item.total.toFixed(2)}</p>
-                            <p class="text-xs text-neutral-500">Inc. GST</p>
-                        </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-primary-600">₹${item.total.toFixed(2)}</p>
+                        <p class="text-xs text-neutral-500">Inc. GST</p>
                     </div>
                 </div>
             </div>
         </div>
-    `).join('');
+    `;
 }
 
 function getProductIcon(product) {
