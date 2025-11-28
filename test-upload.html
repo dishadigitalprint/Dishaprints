@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Supabase Upload & Database</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="src/js/supabase-config.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        button { 
+            padding: 10px 20px; 
+            margin: 10px 5px; 
+            cursor: pointer;
+            font-size: 16px;
+        }
+        pre { 
+            background: #f5f5f5; 
+            padding: 15px; 
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Supabase Upload & Database Test</h1>
+    
+    <h2>Step 1: Test Database Connection</h2>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="connectionResult"></div>
+    
+    <h2>Step 2: Upload Test File</h2>
+    <input type="file" id="testFile" accept=".pdf,.jpg,.png">
+    <button onclick="testUpload()">Upload File</button>
+    <div id="uploadResult"></div>
+    
+    <h2>Step 3: Check Recent Order Items</h2>
+    <button onclick="checkOrderItems()">Check Database</button>
+    <div id="orderItemsResult"></div>
+    
+    <h2>Step 4: Check Storage Files</h2>
+    <button onclick="checkStorage()">List Storage Files</button>
+    <div id="storageResult"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<p>Testing connection...</p>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('count', { count: 'exact', head: true });
+                
+                if (error) throw error;
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ Database connected successfully!</p>
+                    <pre>Supabase URL: ${supabase.supabaseUrl}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Connection failed: ${error.message}</p>
+                `;
+            }
+        }
+        
+        async function testUpload() {
+            const fileInput = document.getElementById('testFile');
+            const resultDiv = document.getElementById('uploadResult');
+            
+            if (!fileInput.files.length) {
+                resultDiv.innerHTML = '<p class="error">❌ Please select a file first</p>';
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            resultDiv.innerHTML = `<p>Uploading ${file.name}...</p>`;
+            
+            try {
+                const timestamp = Date.now();
+                const fileName = `${timestamp}-${file.name}`;
+                const filePath = `test/${fileName}`;
+                
+                // Upload to Supabase Storage
+                const { data, error } = await supabase.storage
+                    .from('order-files')
+                    .upload(filePath, file);
+                
+                if (error) throw error;
+                
+                // Get public URL
+                const { data: urlData } = supabase.storage
+                    .from('order-files')
+                    .getPublicUrl(filePath);
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ File uploaded successfully!</p>
+                    <pre>Path: ${filePath}
+Size: ${(file.size / 1024).toFixed(2)} KB
+Public URL: ${urlData.publicUrl}</pre>
+                    <a href="${urlData.publicUrl}" target="_blank">Open File</a>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Upload failed: ${error.message}</p>
+                    <p>Make sure you've created the 'order-files' bucket in Supabase Dashboard</p>
+                `;
+            }
+        }
+        
+        async function checkOrderItems() {
+            const resultDiv = document.getElementById('orderItemsResult');
+            resultDiv.innerHTML = '<p>Fetching order items...</p>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('order_items')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+                
+                if (error) throw error;
+                
+                if (data.length === 0) {
+                    resultDiv.innerHTML = `
+                        <p class="error">📭 No order items found yet</p>
+                        <p>Upload a file using the order-upload.html page and place an order</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Found ${data.length} recent order items:</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Query failed: ${error.message}</p>
+                    <p>Make sure you've run the SQL schema in Supabase SQL Editor</p>
+                `;
+            }
+        }
+        
+        async function checkStorage() {
+            const resultDiv = document.getElementById('storageResult');
+            resultDiv.innerHTML = '<p>Listing storage files...</p>';
+            
+            try {
+                const { data, error } = await supabase.storage
+                    .from('order-files')
+                    .list('orders', {
+                        limit: 10,
+                        sortBy: { column: 'created_at', order: 'desc' }
+                    });
+                
+                if (error) throw error;
+                
+                if (data.length === 0) {
+                    resultDiv.innerHTML = `
+                        <p class="error">📭 No files in storage yet</p>
+                        <p>Upload files will appear here after placing an order</p>
+                    `;
+                } else {
+                    const fileList = data.map(file => `
+                        <li>${file.name} - ${(file.metadata.size / 1024).toFixed(2)} KB - ${new Date(file.created_at).toLocaleString()}</li>
+                    `).join('');
+                    
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Found ${data.length} files in storage:</p>
+                        <ul>${fileList}</ul>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Storage check failed: ${error.message}</p>
+                    <p>Make sure the 'order-files' bucket exists in Supabase Dashboard</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
