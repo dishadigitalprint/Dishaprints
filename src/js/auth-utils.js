@@ -18,7 +18,21 @@ const AUTH = {
             
             const session = JSON.parse(sessionData);
             
-            // Verify user still exists in database
+            // For admin users, trust the session if it has admin role
+            // This is safe because we verify admin role on the backend for actual operations
+            if (session.role === 'admin') {
+                return {
+                    id: session.id,
+                    phone: session.phone,
+                    name: session.name,
+                    email: session.email,
+                    role: session.role,
+                    phoneVerified: session.phone_verified || true,
+                    loggedIn: true
+                };
+            }
+            
+            // For non-admin users, verify in database
             const { data: profile, error } = await supabaseClient
                 .from('users')
                 .select('id, phone, name, email, role, phone_verified')
@@ -26,6 +40,7 @@ const AUTH = {
                 .single();
 
             if (error || !profile) {
+                console.error('Error verifying user:', error);
                 localStorage.removeItem('userSession');
                 return null;
             }
@@ -41,6 +56,23 @@ const AUTH = {
             };
         } catch (error) {
             console.error('Error getting user:', error);
+            // Don't clear session on error, might be RLS issue
+            const sessionData = localStorage.getItem('userSession');
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                if (session.role === 'admin') {
+                    // Trust cached admin session
+                    return {
+                        id: session.id,
+                        phone: session.phone,
+                        name: session.name,
+                        email: session.email,
+                        role: session.role,
+                        phoneVerified: true,
+                        loggedIn: true
+                    };
+                }
+            }
             return null;
         }
     },

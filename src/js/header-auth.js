@@ -64,7 +64,7 @@ class AuthHeader {
             `;
             
             userActions.innerHTML = `
-                <a href="https://wa.me/919876543210" class="text-sm font-medium text-accentA-600 hover:text-accentA-700 transition-colors duration-200 flex items-center gap-2">
+                <a href="https://wa.me/919700653332" class="text-sm font-medium text-accentA-600 hover:text-accentA-700 transition-colors duration-200 flex items-center gap-2">
                     <i class="fab fa-whatsapp text-lg"></i>
                     <span class="hidden lg:inline">WhatsApp</span>
                 </a>

@@ -100,7 +100,7 @@ document.querySelectorAll('button').forEach(btn => {
     
     if (btn.textContent.includes('Contact')) {
         btn.addEventListener('click', function() {
-            window.open('https://wa.me/919876543210', '_blank');
+            window.open('https://wa.me/919700653332', '_blank');
         });
     }
     

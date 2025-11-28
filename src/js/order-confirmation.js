@@ -63,6 +63,7 @@ function renderOrderSummary() {
     html += '<div class="border-b border-neutral-200 pb-4">';
     html += '<p class="font-semibold text-neutral-900 mb-3">Items Ordered</p>';
     order.items.forEach(item => {
+        const itemTotal = item.total || item.subtotal || item.price || 0;
         html += `
             <div class="flex items-start gap-3 mb-3">
                 <div class="w-10 h-10 bg-primary-50 rounded flex items-center justify-center flex-shrink-0">
@@ -73,7 +74,7 @@ function renderOrderSummary() {
                     <p class="text-xs text-neutral-600">${getItemDetails(item)}</p>
                     <p class="text-xs text-neutral-600">Quantity: ${item.quantity}</p>
                 </div>
-                <p class="text-sm font-semibold text-neutral-900">₹${item.total.toFixed(2)}</p>
+                <p class="text-sm font-semibold text-neutral-900">₹${itemTotal.toFixed(2)}</p>
             </div>
         `;
     });
@@ -84,19 +85,19 @@ function renderOrderSummary() {
     html += `
         <div class="flex justify-between text-sm">
             <span class="text-neutral-600">Subtotal</span>
-            <span class="font-medium text-neutral-900">₹${order.pricing.subtotal.toFixed(2)}</span>
+            <span class="font-medium text-neutral-900">₹${(order.pricing?.subtotal || 0).toFixed(2)}</span>
         </div>
         <div class="flex justify-between text-sm">
-            <span class="text-neutral-600">GST (5%)</span>
-            <span class="font-medium text-neutral-900">₹${order.pricing.gst.toFixed(2)}</span>
+            <span class="text-neutral-600">GST (18%)</span>
+            <span class="font-medium text-neutral-900">₹${(order.pricing?.gst || 0).toFixed(2)}</span>
         </div>
         <div class="flex justify-between text-sm">
             <span class="text-neutral-600">Delivery Charges</span>
-            <span class="font-medium text-neutral-900">${order.pricing.deliveryCharge > 0 ? '₹' + order.pricing.deliveryCharge.toFixed(2) : 'Free'}</span>
+            <span class="font-medium text-neutral-900">${(order.pricing?.deliveryCharge || 0) > 0 ? '₹' + order.pricing.deliveryCharge.toFixed(2) : 'Free'}</span>
         </div>
     `;
     
-    if (order.pricing.codCharge > 0) {
+    if ((order.pricing?.codCharge || 0) > 0) {
         html += `
             <div class="flex justify-between text-sm">
                 <span class="text-neutral-600">COD Charges</span>

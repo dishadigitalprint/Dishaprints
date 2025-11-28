@@ -208,7 +208,7 @@ function applyFilters() {
 }
 
 async function sendFollowUp(phone) {
-    const message = `Hi! I noticed you left some items in your cart at Disha Digital Prints. 🛒\n\nWould you like to complete your order? We're here to help!\n\nReply to this message or call us at +91 98765 43210`;
+    const message = `Hi! I noticed you left some items in your cart at Disha Digital Prints. 🛒\n\nWould you like to complete your order? We're here to help!\n\nReply to this message or call us at +91 9700653332`;
     
     const formattedPhone = whatsappService.formatPhoneNumber(phone);
     const result = await whatsappService.sendTextMessage(formattedPhone, message);

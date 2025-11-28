@@ -52,6 +52,11 @@ function renderCart() {
 }
 
 function renderMultiFileItem(item, index) {
+    // Calculate item total without delivery (delivery is calculated at order level)
+    const itemSubtotal = item.subtotal || 0;
+    const itemGst = item.gst || 0;
+    const itemTotal = itemSubtotal + itemGst;
+    
     return `
         <div class="flex flex-col gap-4">
             <!-- Header -->
@@ -88,7 +93,7 @@ function renderMultiFileItem(item, index) {
             <div class="bg-blue-50 rounded-lg p-4 space-y-2">
                 <div class="flex justify-between text-sm">
                     <span class="text-neutral-600">Subtotal:</span>
-                    <span class="font-semibold">₹${item.subtotal.toFixed(2)}</span>
+                    <span class="font-semibold">₹${itemSubtotal.toFixed(2)}</span>
                 </div>
                 ${item.bulkDiscount > 0 ? `
                     <div class="flex justify-between text-sm text-green-600">
@@ -97,19 +102,16 @@ function renderMultiFileItem(item, index) {
                     </div>
                 ` : ''}
                 <div class="flex justify-between text-sm">
-                    <span class="text-neutral-600">GST:</span>
-                    <span class="font-semibold">₹${item.gst.toFixed(2)}</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-neutral-600">Delivery:</span>
-                    <span class="font-semibold ${item.deliveryCharge === 0 ? 'text-green-600' : ''}">
-                        ${item.deliveryCharge === 0 ? 'FREE' : '₹' + item.deliveryCharge.toFixed(2)}
-                    </span>
+                    <span class="text-neutral-600">GST (5%):</span>
+                    <span class="font-semibold">₹${itemGst.toFixed(2)}</span>
                 </div>
                 <div class="flex justify-between text-lg font-bold border-t border-neutral-200 pt-2 mt-2">
-                    <span>Total:</span>
-                    <span class="text-primary-600">₹${item.price.toFixed(2)}</span>
+                    <span>Item Total:</span>
+                    <span class="text-primary-600">₹${itemTotal.toFixed(2)}</span>
                 </div>
+                <p class="text-xs text-neutral-500 text-center mt-2">
+                    <i class="fas fa-info-circle"></i> Delivery calculated at checkout
+                </p>
             </div>
         </div>
     `;
@@ -294,15 +296,83 @@ function recalculateItemPrice(item, newQty) {
 }
 
 function updateSummary() {
-    const subtotal = cart.reduce((sum, item) => sum + (item.pricing?.subtotal || item.total || 0), 0);
-    const gst = subtotal * 0.05;
+    // Calculate subtotal (before GST)
+    let subtotal = 0;
+    let gstTotal = 0;
+    
+    cart.forEach(item => {
+        // Multi-file items have subtotal, gst at root level
+        if (item.type === 'multi-file-upload') {
+            subtotal += (item.subtotal || 0);
+            gstTotal += (item.gst || 0);
+        } 
+        // Standard items have pricing nested
+        else if (item.pricing) {
+            subtotal += (item.pricing.subtotal || 0);
+            gstTotal += (item.pricing.gst || 0);
+        }
+        // Fallback for legacy items
+        else {
+            const itemTotal = item.total || 0;
+            // Assume total includes GST, back-calculate subtotal
+            subtotal += itemTotal / 1.05;
+            gstTotal += (itemTotal / 1.05) * 0.05;
+        }
+    });
+    
+    // Calculate delivery charge ONCE per order (not per item)
+    // Free delivery on orders >= ₹500, otherwise ₹50
     const deliveryCharge = subtotal >= 500 ? 0 : 50;
-    const total = subtotal + gst + deliveryCharge;
+    
+    const total = subtotal + gstTotal + deliveryCharge;
 
+    // Update UI
     document.getElementById('subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-    document.getElementById('gst').textContent = `₹${gst.toFixed(2)}`;
-    document.getElementById('delivery').textContent = deliveryCharge > 0 ? `₹${deliveryCharge.toFixed(2)}` : 'Free';
+    document.getElementById('gst').textContent = `₹${gstTotal.toFixed(2)}`;
+    
+    const deliveryEl = document.getElementById('delivery');
+    if (deliveryCharge === 0) {
+        deliveryEl.textContent = 'FREE';
+        deliveryEl.classList.add('text-green-600', 'font-semibold');
+    } else {
+        deliveryEl.textContent = `₹${deliveryCharge.toFixed(2)}`;
+        deliveryEl.classList.remove('text-green-600', 'font-semibold');
+    }
+    
     document.getElementById('total').textContent = `₹${total.toFixed(2)}`;
+    
+    // Update free delivery progress indicator
+    updateFreeDeliveryProgress(subtotal);
+}
+
+function updateFreeDeliveryProgress(subtotal) {
+    const freeDeliveryThreshold = 500;
+    const remaining = freeDeliveryThreshold - subtotal;
+    
+    const progressContainer = document.getElementById('freeDeliveryProgress');
+    if (!progressContainer) return;
+    
+    if (subtotal >= freeDeliveryThreshold) {
+        progressContainer.innerHTML = `
+            <div class="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center gap-2">
+                <i class="fas fa-check-circle text-green-600"></i>
+                <span class="text-sm text-green-800 font-medium">🎉 You've unlocked FREE delivery!</span>
+            </div>
+        `;
+    } else {
+        const percentage = (subtotal / freeDeliveryThreshold) * 100;
+        progressContainer.innerHTML = `
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-blue-800">Add <strong>₹${remaining.toFixed(2)}</strong> more for FREE delivery</span>
+                    <span class="text-xs text-blue-600 font-semibold">${percentage.toFixed(0)}%</span>
+                </div>
+                <div class="w-full bg-blue-200 rounded-full h-2">
+                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: ${percentage}%"></div>
+                </div>
+            </div>
+        `;
+    }
 }
 
 function attachEventListeners() {

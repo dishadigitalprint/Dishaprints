@@ -7,8 +7,18 @@ let filteredOrders = [];
 (async function() {
     currentUser = await AUTH.requireAdmin();
     if (!currentUser) return;
-    init();
+    await loadOrders();
+    setupEventListeners();
 })();
+
+// Initialize event listeners
+function setupEventListeners() {
+    // Add any event listeners here
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => filterOrders(btn.dataset.filter));
+    });
+}
 
 // Logout function
 function logout() {
@@ -74,6 +84,27 @@ function renderOrderItems(order) {
                 const files = orderData.files;
                 const summary = orderData.pricingSummary || {};
                 
+                // Debug: Log first file to see what fields are available
+                if (files.length > 0) {
+                    console.log('First file object:', files[0]);
+                    console.log('Available fields:', Object.keys(files[0]));
+                }
+                
+                // If files don't have URLs, try to get them from order_items
+                if (files.length > 0 && !files[0].filePath && !files[0].fileUrl && order.order_items) {
+                    console.log('Files missing URLs, checking order_items...');
+                    // Match files with order_items by fileName
+                    files.forEach(file => {
+                        const matchingItem = order.order_items.find(item => 
+                            item.file_name === file.name || item.product_name?.includes(file.name)
+                        );
+                        if (matchingItem) {
+                            file.fileUrl = matchingItem.file_url;
+                            console.log(`Matched ${file.name} with URL:`, file.fileUrl);
+                        }
+                    });
+                }
+                
                 return `
                     <div class="space-y-4">
                         <!-- Customer Info from order_data -->
@@ -97,6 +128,7 @@ function renderOrderItems(order) {
                                         <th class="px-3 py-2 text-left font-semibold text-gray-900">Binding</th>
                                         <th class="px-3 py-2 text-left font-semibold text-gray-900">Cover</th>
                                         <th class="px-3 py-2 text-right font-semibold text-gray-900">Total</th>
+                                        <th class="px-3 py-2 text-center font-semibold text-gray-900">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
@@ -117,6 +149,13 @@ function renderOrderItems(order) {
                                             <td class="px-3 py-2 capitalize">${file.binding}</td>
                                             <td class="px-3 py-2 capitalize">${file.cover}</td>
                                             <td class="px-3 py-2 text-right font-semibold">${formatCurrency(file.total)}</td>
+                                            <td class="px-3 py-2 text-center">
+                                                <button onclick="downloadFile('${file.fileUrl || file.filePath || file.storageUrl || file.url}')" 
+                                                        class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                                        title="Download file">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
@@ -190,6 +229,7 @@ function renderOrderItems(order) {
                                     <th class="px-3 py-2 text-left font-semibold text-gray-900">Binding</th>
                                     <th class="px-3 py-2 text-left font-semibold text-gray-900">Cover</th>
                                     <th class="px-3 py-2 text-right font-semibold text-gray-900">Total</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-gray-900">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
@@ -210,6 +250,13 @@ function renderOrderItems(order) {
                                         <td class="px-3 py-2 capitalize">${file.binding}</td>
                                         <td class="px-3 py-2 capitalize">${file.cover}</td>
                                         <td class="px-3 py-2 text-right font-semibold">${formatCurrency(file.total)}</td>
+                                        <td class="px-3 py-2 text-center">
+                                            <button onclick="downloadFile('${file.filePath || file.fileUrl || file.storageUrl || file.url}')" 
+                                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                                    title="Download file">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -240,7 +287,7 @@ function renderOrderItems(order) {
                         </div>
                         <div class="flex justify-between text-lg font-bold border-t border-gray-300 pt-2 mt-2">
                             <span>Grand Total:</span>
-                            <span>${formatCurrency(summary.grandTotal || order.total_amount)}</span>
+                            <span>${formatCurrency(summary.grandTotal || ((order.subtotal || 0) + (order.gst || 0) + (order.delivery_charge || 0)))}</span>
                         </div>
                     </div>
                 </div>
@@ -274,7 +321,7 @@ function renderOrderItems(order) {
                     <tfoot class="bg-gray-50">
                         <tr>
                             <td colspan="3" class="px-4 py-3 text-right text-sm font-semibold">Total:</td>
-                            <td class="px-4 py-3 text-right text-lg font-bold">${formatCurrency(order.total_amount)}</td>
+                            <td class="px-4 py-3 text-right text-lg font-bold">${formatCurrency((order.subtotal || 0) + (order.gst || 0) + (order.delivery_charge || 0))}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -294,7 +341,7 @@ async function loadOrders() {
                 *,
                 users (name, phone, email),
                 addresses (
-                    full_name,
+                    name,
                     phone,
                     address_line1,
                     address_line2,
@@ -346,7 +393,7 @@ function renderOrders() {
                     </div>
                 </div>
                 <div class="text-right">
-                    <p class="text-2xl font-bold text-gray-900">${formatCurrency(order.total_amount)}</p>
+                    <p class="text-2xl font-bold text-gray-900">${formatCurrency((order.subtotal || 0) + (order.gst || 0) + (order.delivery_charge || 0))}</p>
                     <p class="text-sm text-gray-600">${order.payment_method || 'COD'}</p>
                 </div>
             </div>
@@ -375,7 +422,7 @@ async function viewOrder(orderId) {
                 *,
                 users (name, phone, email),
                 addresses (
-                    full_name,
+                    name,
                     phone,
                     address_line1,
                     address_line2,
@@ -411,7 +458,7 @@ async function viewOrder(orderId) {
                     <h4 class="font-bold text-gray-900 mb-3">Delivery Address</h4>
                     <div class="bg-gray-50 p-4 rounded-lg">
                         ${order.addresses ? `
-                            <p><strong>${order.addresses.full_name}</strong></p>
+                            <p><strong>${order.addresses.name}</strong></p>
                             <p>${order.addresses.address_line1}</p>
                             ${order.addresses.address_line2 ? `<p>${order.addresses.address_line2}</p>` : ''}
                             <p>${order.addresses.city}, ${order.addresses.state} - ${order.addresses.pincode}</p>
@@ -562,6 +609,64 @@ document.getElementById('orderModal').addEventListener('click', (e) => {
         closeModal();
     }
 });
+
+// Download file function
+async function downloadFile(fileUrl) {
+    try {
+        if (!fileUrl) {
+            alert('File URL not available');
+            return;
+        }
+
+        console.log('Downloading file:', fileUrl);
+
+        // If it's a storage path, get the public URL
+        let downloadUrl = fileUrl;
+        if (!fileUrl.startsWith('http')) {
+            // It's a storage path, get public URL from Supabase
+            const { data, error } = supabaseClient.storage
+                .from('order-files')
+                .getPublicUrl(fileUrl);
+            
+            if (error) {
+                console.error('Error getting public URL:', error);
+                alert('Failed to get download link. Please contact support.');
+                return;
+            }
+            
+            downloadUrl = data.publicUrl;
+            console.log('Public URL:', downloadUrl);
+        }
+
+        // For Supabase Storage files, we need to fetch and download
+        const response = await fetch(downloadUrl);
+        if (!response.ok) {
+            throw new Error('Failed to fetch file');
+        }
+        
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        // Create a temporary link and trigger download
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileUrl.split('/').pop(); // Use filename from path
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up the blob URL
+        window.URL.revokeObjectURL(blobUrl);
+        
+        console.log('Download initiated for:', downloadUrl);
+    } catch (error) {
+        console.error('Error downloading file:', error);
+        alert('Failed to download file. Please try again or contact support.');
+    }
+}
+
+// Make it globally available
+window.downloadFile = downloadFile;
 
 // Initialize
 loadOrders();

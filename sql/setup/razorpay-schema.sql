@@ -106,11 +106,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_razorpay_payments_updated_at ON razorpay_payments;
 CREATE TRIGGER trigger_razorpay_payments_updated_at
     BEFORE UPDATE ON razorpay_payments
     FOR EACH ROW
     EXECUTE FUNCTION update_razorpay_updated_at();
 
+DROP TRIGGER IF EXISTS trigger_razorpay_config_updated_at ON razorpay_config;
 CREATE TRIGGER trigger_razorpay_config_updated_at
     BEFORE UPDATE ON razorpay_config
     FOR EACH ROW
@@ -125,6 +127,7 @@ ALTER TABLE razorpay_payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE razorpay_webhooks ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Only admins can manage Razorpay configuration
+DROP POLICY IF EXISTS "Admins can manage razorpay_config" ON razorpay_config;
 CREATE POLICY "Admins can manage razorpay_config"
     ON razorpay_config
     FOR ALL
@@ -137,12 +140,14 @@ CREATE POLICY "Admins can manage razorpay_config"
     );
 
 -- Policy: Users can view their own payments
+DROP POLICY IF EXISTS "Users can view own payments" ON razorpay_payments;
 CREATE POLICY "Users can view own payments"
     ON razorpay_payments
     FOR SELECT
     USING (user_id = auth.uid());
 
 -- Policy: Admins can view all payments
+DROP POLICY IF EXISTS "Admins can view all payments" ON razorpay_payments;
 CREATE POLICY "Admins can view all payments"
     ON razorpay_payments
     FOR SELECT
@@ -158,6 +163,7 @@ CREATE POLICY "Admins can view all payments"
 -- Note: Payment creation will be done via service role API calls
 
 -- Policy: Only admins can view webhooks
+DROP POLICY IF EXISTS "Admins can view webhooks" ON razorpay_webhooks;
 CREATE POLICY "Admins can view webhooks"
     ON razorpay_webhooks
     FOR SELECT

@@ -21,7 +21,7 @@ let currentUser = null;
     document.getElementById('admin-phone').textContent = currentUser.phone || '';
     
     // Initialize dashboard
-    init();
+    initDashboard();
 })();
 
 // Logout function
@@ -92,14 +92,16 @@ async function loadTodaysSummary() {
 // Load Recent Orders
 async function loadRecentOrders() {
     try {
-        const { data, error} = await supabaseClient
+        const { data, error } = await supabaseClient
             .from('orders')
             .select(`
                 id,
                 order_number,
                 user_id,
                 status,
-                total_amount,
+                subtotal,
+                gst,
+                delivery_charge,
                 created_at,
                 users (name, phone)
             `)
@@ -129,7 +131,7 @@ async function loadRecentOrders() {
                     </p>
                 </div>
                 <div class="text-right">
-                    <p class="font-bold text-gray-900">${formatCurrency(order.total_amount)}</p>
+                    <p class="font-bold text-gray-900">${formatCurrency((order.subtotal || 0) + (order.gst || 0) + (order.delivery_charge || 0))}</p>
                     <a href="admin-orders.html?order=${order.id}" class="text-xs text-blue-600 hover:text-blue-700">
                         View Details →
                     </a>
@@ -146,10 +148,15 @@ async function loadRecentOrders() {
 // Load Order Status Breakdown
 async function loadOrderStatusBreakdown() {
     try {
+        // Get today's date at midnight in ISO format
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayISO = today.toISOString();
+        
         const { data, error } = await supabaseClient
             .from('orders')
-            .select('status, total_amount')
-            .gte('created_at', new Date().setHours(0, 0, 0, 0).toString());
+            .select('status, subtotal, gst, delivery_charge')
+            .gte('created_at', todayISO);
 
         if (error) throw error;
 
@@ -159,7 +166,8 @@ async function loadOrderStatusBreakdown() {
         
         data.forEach(order => {
             statusCounts[order.status] = (statusCounts[order.status] || 0) + 1;
-            statusTotals[order.status] = (statusTotals[order.status] || 0) + order.total_amount;
+            const totalAmount = (order.subtotal || 0) + (order.gst || 0) + (order.delivery_charge || 0);
+            statusTotals[order.status] = (statusTotals[order.status] || 0) + totalAmount;
         });
 
         const statusOrder = ['pending', 'confirmed', 'processing', 'ready', 'completed', 'cancelled'];

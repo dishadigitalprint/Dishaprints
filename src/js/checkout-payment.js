@@ -403,9 +403,9 @@ async function placeOrder() {
     }
 
     // Calculate final amount
-    const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
-    const gst = subtotal * 0.05;
-    const deliveryCharge = deliveryInfo.deliveryMethod === 'delivery' ? 50 : 0;
+    const subtotal = cart.reduce((sum, item) => sum + (item.subtotal || item.price || item.total || 0), 0);
+    const gst = subtotal * 0.18;
+    const deliveryCharge = deliveryInfo.delivery?.deliveryMethod === 'delivery' ? 50 : 0;
     const codCharge = selectedPaymentMethod === 'cod' ? paymentSettings.cod_charge : 0;
     const total = subtotal + gst + deliveryCharge + codCharge;
 
@@ -415,8 +415,25 @@ async function placeOrder() {
     showToast('Creating your order...', 'info');
 
     try {
-        // Step 1: Save address to database
-        const addressResult = await SupabaseDB.saveAddress(user.id, deliveryInfo);
+        // Step 1: Save address to database - flatten the nested structure
+        console.log('Full deliveryInfo:', deliveryInfo);
+        
+        const addressData = {
+            name: deliveryInfo.contact?.name || deliveryInfo.name || user.name,
+            phone: deliveryInfo.contact?.phone || deliveryInfo.phone || user.phone,
+            email: deliveryInfo.contact?.email || deliveryInfo.email || user.email || '',
+            address_line1: deliveryInfo.delivery?.address || deliveryInfo.address_line1 || '',
+            address_line2: deliveryInfo.delivery?.address2 || deliveryInfo.address_line2 || '',
+            city: deliveryInfo.delivery?.city || deliveryInfo.city || '',
+            state: deliveryInfo.delivery?.state || deliveryInfo.state || '',
+            pincode: deliveryInfo.delivery?.pincode || deliveryInfo.pincode || '',
+            landmark: deliveryInfo.delivery?.landmark || deliveryInfo.landmark || '',
+            is_default: false
+        };
+        
+        console.log('Address data to save:', addressData);
+        
+        const addressResult = await SupabaseDB.saveAddress(user.id, addressData);
         let addressId = addressResult.data?.id;
         
         if (!addressId) {
@@ -431,7 +448,7 @@ async function placeOrder() {
             codCharge: codCharge,
             total: total,
             paymentMethod: selectedPaymentMethod,
-            deliveryMethod: deliveryInfo.deliveryMethod || 'delivery',
+            deliveryMethod: deliveryInfo.delivery?.deliveryMethod || 'delivery',
             paymentScreenshot: window.uploadedPaymentProof ? window.uploadedPaymentProof.name : null,
             notes: null
         };
@@ -551,16 +568,33 @@ async function handleRazorpayPayment() {
         }
 
         // Calculate final amount
-        const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
-        const gst = subtotal * 0.05;
-        const deliveryCharge = deliveryInfo.deliveryMethod === 'delivery' ? 50 : 0;
+        const subtotal = cart.reduce((sum, item) => sum + (item.subtotal || item.price || item.total || 0), 0);
+        const gst = subtotal * 0.18;
+        const deliveryCharge = deliveryInfo.delivery?.deliveryMethod === 'delivery' ? 50 : 0;
         const total = subtotal + gst + deliveryCharge;
 
         // Create order in database first
         showToast('Creating order...', 'info');
         
-        // Save address
-        const addressResult = await SupabaseDB.saveAddress(user.id, deliveryInfo);
+        // Save address - flatten the nested structure
+        console.log('Full deliveryInfo:', deliveryInfo);
+        
+        const addressData = {
+            name: deliveryInfo.contact?.name || deliveryInfo.name || user.name,
+            phone: deliveryInfo.contact?.phone || deliveryInfo.phone || user.phone,
+            email: deliveryInfo.contact?.email || deliveryInfo.email || user.email || '',
+            address_line1: deliveryInfo.delivery?.address || deliveryInfo.address_line1 || '',
+            address_line2: deliveryInfo.delivery?.address2 || deliveryInfo.address_line2 || '',
+            city: deliveryInfo.delivery?.city || deliveryInfo.city || '',
+            state: deliveryInfo.delivery?.state || deliveryInfo.state || '',
+            pincode: deliveryInfo.delivery?.pincode || deliveryInfo.pincode || '',
+            landmark: deliveryInfo.delivery?.landmark || deliveryInfo.landmark || '',
+            is_default: false
+        };
+        
+        console.log('Address data to save:', addressData);
+        
+        const addressResult = await SupabaseDB.saveAddress(user.id, addressData);
         const addressId = addressResult.data?.id;
 
         // Create order
@@ -571,7 +605,7 @@ async function handleRazorpayPayment() {
             codCharge: 0,
             total: total,
             paymentMethod: 'razorpay',
-            deliveryMethod: deliveryInfo.deliveryMethod || 'delivery',
+            deliveryMethod: deliveryInfo.delivery?.deliveryMethod || 'delivery',
             paymentScreenshot: null,
             notes: null
         };
@@ -588,9 +622,9 @@ async function handleRazorpayPayment() {
         await RazorpayService.openCheckout({
             orderId: orderResult.order.id,
             amount: total,
-            customerName: deliveryInfo.name || user.name,
-            email: user.email || '',
-            contact: deliveryInfo.phone || user.phone,
+            customerName: deliveryInfo.contact?.name || deliveryInfo.name || user.name,
+            email: deliveryInfo.contact?.email || user.email || '',
+            contact: deliveryInfo.contact?.phone || deliveryInfo.phone || user.phone,
             description: `Order #${orderResult.order.order_number}`,
             onError: (error) => {
                 showToast(`Payment Error: ${error.message}`, 'error');

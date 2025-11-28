@@ -472,6 +472,9 @@ class OrderUpload {
             );
 
             // Create cart item for multi-file order with uploaded file URLs
+            // Note: Delivery charge is calculated at cart level, not per item
+            const itemTotal = parseFloat(pricingSummary.subtotal) + parseFloat(pricingSummary.gst);
+            
             const cartItem = {
                 id: 'multi-file-' + Date.now(),
                 type: 'multi-file-upload',
@@ -480,10 +483,9 @@ class OrderUpload {
                 jobDescription: jobDescription,
                 files: uploadedFiles,
                 quantity: 1,
-                price: parseFloat(pricingSummary.grandTotal),
+                price: itemTotal, // Item price without delivery
                 subtotal: parseFloat(pricingSummary.subtotal),
                 gst: parseFloat(pricingSummary.gst),
-                deliveryCharge: parseFloat(pricingSummary.deliveryCharge),
                 bulkDiscount: parseFloat(pricingSummary.bulkDiscount || 0),
                 pricingSummary: pricingSummary,
                 addedAt: new Date().toISOString()

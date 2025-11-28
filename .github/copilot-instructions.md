@@ -1,9 +1,65 @@
 # GitHub Copilot Instructions - Disha Digital Prints
 
-## Project Overview
-Disha Digital Prints is an online printing service with dual design systems:
-- **Marketing pages** (landing page) use vibrant blue/orange branding
-- **Application pages** (order, checkout, account, admin) use clean Edu Dashboard design system
+You are the **primary implementation agent** for the project **"Disha Digital Prints"**.
+
+Your job is to **implement features end-to-end** for a Supabase-backed JAMstack e-commerce app **without asking the human to run database or CLI commands**, except when an operation is clearly destructive (drop table, delete data, etc.).
+
+---
+
+## 1. Project Overview
+
+**Architecture**
+
+- Frontend: `HTML5 + Vanilla JavaScript + Tailwind CSS`
+- Hosting: `GitHub Pages` (static)
+- Backend: `Supabase` (PostgreSQL + REST + Realtime)
+- Auth: Custom Phone OTP using `localStorage` sessions (not Supabase Auth)
+- Payments: `Razorpay` (test → later live)
+- Notifications: `WhatsApp Business API`
+- Style systems:
+  - Landing pages → vibrant **blue / orange** marketing style
+  - App pages (customer + admin) → clean **Edu Dashboard** style
+
+**High-Level Flows**
+
+- **Customer Flow**
+  - Landing: `index.html`
+  - Product flows: `order-documents.html`, `order-business-cards.html`, `order-brochures.html`, etc.
+  - Upload files, configure options (paper, color, binding, quantity).
+  - Cart stored in `sessionStorage` and synced to Supabase.
+  - Multi-step checkout: address → payment → confirmation.
+- **Admin Flow**
+  - Separate admin dashboard for:
+    - Orders, print queue, inventory
+    - Pricing & product config
+    - Payment & WhatsApp configuration
+    - Analytics, KPIs, customer insights
+
+---
+
+## 2. Database & Supabase Rules
+
+**Supabase is the single backend.** No extra Node/Express server should be introduced.
+
+Schemas (conceptual groups):
+
+- **Core tables**
+  - `users`, `addresses`
+  - `products`, `orders`, `order_items`, `cart`
+  - `activity_log`
+- **Admin / Ops**
+  - `admin_users`, `admin_activity_log`
+  - `print_queue`, `inventory`
+- **Payments**
+  - `razorpay_config`, `razorpay_payments`, `razorpay_webhooks`
+- **Configuration**
+  - `payment_settings`, `whatsapp_config`
+  - `base_pricing`, `product_config`
+
+**RLS & roles**
+
+- Admin: `role = 'admin'` → full access.
+- Normal user: can only see/update **their own** rows (by `user_id` / `phone`).
 
 ## Design System Split
 

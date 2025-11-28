@@ -62,6 +62,31 @@ const SupabaseDB = {
      */
     async createOrder(userId, addressId, orderData, cartItems) {
         try {
+            // Prepare customer_notes - for multi-file uploads, store the complete data
+            let customerNotes = orderData.notes || null;
+            const multiFileItem = cartItems.find(item => item.type === 'multi-file-upload');
+            
+            if (multiFileItem) {
+                // Store the complete multi-file order data in customer_notes
+                customerNotes = JSON.stringify({
+                    customerName: multiFileItem.customerName,
+                    jobDescription: multiFileItem.jobDescription,
+                    files: multiFileItem.files.map(f => ({
+                        name: f.fileName,
+                        filePath: f.filePath,
+                        fileUrl: f.fileUrl,
+                        pages: f.pages,
+                        quantity: f.quantity,
+                        printMode: f.printMode,
+                        paperQuality: f.paperQuality,
+                        binding: f.binding,
+                        cover: f.cover,
+                        total: f.total
+                    })),
+                    pricingSummary: multiFileItem.pricingSummary
+                });
+            }
+            
             // First, insert the order
             const { data: order, error: orderError} = await supabaseClient
                 .from('orders')
@@ -79,7 +104,7 @@ const SupabaseDB = {
                     payment_status: orderData.paymentMethod === 'cod' ? 'pending' : 'pending',
                     payment_screenshot: orderData.paymentScreenshot || null,
                     delivery_method: orderData.deliveryMethod || 'delivery',
-                    customer_notes: orderData.notes || null
+                    customer_notes: customerNotes
                 }])
                 .select()
                 .single();
@@ -111,7 +136,7 @@ const SupabaseDB = {
                             },
                             file_url: file.fileUrl,
                             file_name: file.fileName,
-                            file_size_bytes: file.fileSize || 0,
+                            file_size: file.fileSize || 0,
                             quantity: file.quantity,
                             unit_price: file.total / file.quantity,
                             subtotal: file.total
@@ -126,7 +151,7 @@ const SupabaseDB = {
                         configuration: item.configuration || {},
                         file_url: null,
                         file_name: null,
-                        file_size_bytes: 0,
+                        file_size: 0,
                         quantity: item.quantity || item.copies || 1,
                         unit_price: (item.pricing?.subtotal || item.total || 0) / (item.quantity || item.copies || 1),
                         subtotal: item.pricing?.subtotal || item.total || 0

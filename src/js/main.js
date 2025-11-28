@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // WhatsApp Integration
 function openWhatsApp(message = 'Hello, I want to know more about printing services') {
-    const phoneNumber = '919876543210';
+    const phoneNumber = '919700653332';
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
 }

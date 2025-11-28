@@ -10,8 +10,8 @@ class WhatsAppService {
             phoneNumberId: 'YOUR_PHONE_NUMBER_ID',
             accessToken: 'YOUR_ACCESS_TOKEN',
             apiVersion: 'v18.0',
-            businessPhoneNumber: '+919876543210',
-            adminPhoneNumber: '+919876543210',
+            businessPhoneNumber: '+919700653332',
+            adminPhoneNumber: '+919700653332',
             silentNotifications: true,
             enableLoginNotifications: true,
             enableCartNotifications: true,
@@ -31,20 +31,23 @@ class WhatsAppService {
      */
     async loadConfig() {
         try {
-            if (typeof supabase === 'undefined') {
-                console.warn('Supabase not available, using default WhatsApp config');
+            if (typeof supabaseClient === 'undefined') {
+                console.warn('⚠️ Supabase not available, using default WhatsApp config');
                 return;
             }
             
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('whatsapp_config')
                 .select('*')
                 .order('created_at', { ascending: false })
                 .limit(1)
-                .single();
+                .maybeSingle(); // Use maybeSingle() to handle 0 rows gracefully
             
             if (error) {
-                console.error('Error loading WhatsApp config:', error);
+                // Only log if it's not a "table doesn't exist" or "no rows" error
+                if (error.code !== '42P01' && error.code !== 'PGRST116') {
+                    console.error('Error loading WhatsApp config:', error);
+                }
                 return;
             }
             
@@ -74,7 +77,7 @@ class WhatsAppService {
 
     /**
      * Send OTP via WhatsApp
-     * @param {string} phoneNumber - User's phone number with country code (e.g., +919876543210)
+     * @param {string} phoneNumber - User's phone number with country code (e.g., +919700653332)
      * @param {string} otp - 6-digit OTP
      */
     async sendOTP(phoneNumber, otp) {
@@ -249,7 +252,7 @@ class WhatsAppService {
                 ? `\n\n📍 *Pickup Location:*\nDisha Digital Prints\n${orderData.storeAddress || 'Visit our store'}\n\n⏰ Store Hours: 9 AM - 7 PM`
                 : `\n\n🚚 *Delivery:*\nYour order will be delivered soon.`;
             
-            const message = `🎉 *Order Ready!*\n\nDear ${orderData.customerName},\n\nYour order #${orderData.orderNumber} is now ready!\n\n📦 *Order Details:*\n• Total Amount: ₹${orderData.total}\n• Items: ${orderData.itemCount} item(s)${deliveryInfo}\n\nThank you for choosing Disha Digital Prints! 🙏\n\nFor queries: ${orderData.storePhone || '9876543210'}`;
+            const message = `🎉 *Order Ready!*\n\nDear ${orderData.customerName},\n\nYour order #${orderData.orderNumber} is now ready!\n\n📦 *Order Details:*\n• Total Amount: ₹${orderData.total}\n• Items: ${orderData.itemCount} item(s)${deliveryInfo}\n\nThank you for choosing Disha Digital Prints! 🙏\n\nFor queries: ${orderData.storePhone || '9700653332'}`;
             
             return await this.sendTextMessage(orderData.customerPhone, message);
         } catch (error) {

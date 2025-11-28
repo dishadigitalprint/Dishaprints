@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Supabase Storage Bucket</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .success { color: #22c55e; font-weight: bold; }
+        .error { color: #ef4444; font-weight: bold; }
+        .warning { color: #f59e0b; font-weight: bold; }
+        button { 
+            padding: 12px 24px; 
+            margin: 10px 5px; 
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+        }
+        button:hover { background: #1d4ed8; }
+        pre { 
+            background: #1f2937; 
+            color: #f3f4f6;
+            padding: 15px; 
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .step {
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .step h3 { margin-top: 0; color: #1e40af; }
+        h1 { color: #1f2937; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🗄️ Supabase Storage Bucket Setup</h1>
+        <p>This page will help you create the <code>order-files</code> storage bucket.</p>
+    </div>
+
+    <div class="card">
+        <h2>Step 1: Check Connection</h2>
+        <button onclick="checkConnection()">Test Supabase Connection</button>
+        <div id="connectionResult"></div>
+    </div>
+
+    <div class="card">
+        <h2>Step 2: List Existing Buckets</h2>
+        <button onclick="listBuckets()">List Storage Buckets</button>
+        <div id="bucketsResult"></div>
+    </div>
+
+    <div class="card">
+        <h2>Step 3: Manual Bucket Creation</h2>
+        <div class="step">
+            <h3>⚠️ Buckets MUST be created via Supabase Dashboard</h3>
+            <p>For security reasons, storage buckets cannot be created via JavaScript API.</p>
+            <p><strong>Follow these steps:</strong></p>
+            <ol>
+                <li>Click the button below to open Supabase Storage Dashboard</li>
+                <li>Click the green <strong>"New bucket"</strong> button (top right)</li>
+                <li>Name: <code style="background: #fef3c7; padding: 2px 6px; border-radius: 3px;">order-files</code></li>
+                <li>Toggle <strong>"Public bucket"</strong> to ON (very important!)</li>
+                <li>Click <strong>"Create bucket"</strong></li>
+                <li>Come back here and click "Verify Bucket" below</li>
+            </ol>
+        </div>
+        <button onclick="openSupabaseDashboard()">🔗 Open Supabase Dashboard</button>
+        <button onclick="verifyBucket()" style="background: #22c55e;">✓ Verify Bucket Created</button>
+        <div id="verifyResult"></div>
+    </div>
+
+    <div class="card">
+        <h2>Step 4: Create Storage Policies (After Bucket Exists)</h2>
+        <button onclick="showPolicies()">Show SQL Policies</button>
+        <div id="policiesResult"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://noerqtwbyqeunjvnzlmg.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vZXJxdHdieXFldW5qdm56bG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzI4NzUsImV4cCI6MjA3ODk0ODg3NX0.h7-61oV4uhYG9CHDwrAEU1TKAEXpJNem4fl8bDiLLIY';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function checkConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<p>Testing connection...</p>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('count', { count: 'exact', head: true });
+                
+                if (error) throw error;
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ Supabase Connected!</p>
+                    <pre>URL: ${SUPABASE_URL}
+Status: Active
+Database: Connected</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Connection failed: ${error.message}</p>`;
+            }
+        }
+
+        async function listBuckets() {
+            const resultDiv = document.getElementById('bucketsResult');
+            resultDiv.innerHTML = '<p>Fetching buckets...</p>';
+            
+            try {
+                const { data, error } = await supabase.storage.listBuckets();
+                
+                if (error) throw error;
+                
+                if (data.length === 0) {
+                    resultDiv.innerHTML = `
+                        <p class="warning">⚠️ No storage buckets found!</p>
+                        <p>You need to create the <code>order-files</code> bucket manually in Supabase Dashboard.</p>
+                    `;
+                } else {
+                    const hasOrderFiles = data.find(b => b.id === 'order-files');
+                    
+                    if (hasOrderFiles) {
+                        resultDiv.innerHTML = `
+                            <p class="success">✅ Found ${data.length} bucket(s), including 'order-files'!</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                            <p>You're ready to upload files! Go back to order-upload.html and try again.</p>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <p class="warning">⚠️ Found ${data.length} bucket(s), but 'order-files' is missing:</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                            <p>Please create the 'order-files' bucket using Step 3 above.</p>
+                        `;
+                    }
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        function openSupabaseDashboard() {
+            window.open('https://app.supabase.com/project/noerqtwbyqeunjvnzlmg/storage/buckets', '_blank');
+        }
+
+        async function verifyBucket() {
+            const resultDiv = document.getElementById('verifyResult');
+            resultDiv.innerHTML = '<p>Checking for order-files bucket...</p>';
+            
+            try {
+                const { data, error } = await supabase.storage.listBuckets();
+                
+                if (error) throw error;
+                
+                const bucket = data.find(b => b.id === 'order-files');
+                
+                if (bucket) {
+                    resultDiv.innerHTML = `
+                        <p class="success">🎉 SUCCESS! Bucket 'order-files' exists!</p>
+                        <pre>${JSON.stringify(bucket, null, 2)}</pre>
+                        <p><strong>Next:</strong> Run the SQL policies in Step 4, then test uploading in order-upload.html</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Bucket 'order-files' not found yet.</p>
+                        <p>Make sure you:</p>
+                        <ul>
+                            <li>Named it exactly: <code>order-files</code> (with hyphen)</li>
+                            <li>Clicked "Create bucket" button</li>
+                            <li>Waited 2-3 seconds for creation</li>
+                        </ul>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        function showPolicies() {
+            const resultDiv = document.getElementById('policiesResult');
+            resultDiv.innerHTML = `
+                <div class="step">
+                    <h3>Run these SQL queries in Supabase SQL Editor:</h3>
+                    <p>1. Go to: <a href="https://app.supabase.com/project/noerqtwbyqeunjvnzlmg/sql/new" target="_blank">SQL Editor</a></p>
+                    <p>2. Copy and paste this SQL:</p>
+                    <pre>-- Allow authenticated users to upload files
+CREATE POLICY "Allow authenticated uploads"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'order-files');
+
+-- Allow everyone to download files (for admin access)
+CREATE POLICY "Allow public downloads"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'order-files');
+
+-- Allow authenticated users to delete files
+CREATE POLICY "Allow authenticated deletes"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'order-files');</pre>
+                    <p>3. Click <strong>"Run"</strong> button</p>
+                    <p>4. You should see: <span class="success">Success. No rows returned</span></p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

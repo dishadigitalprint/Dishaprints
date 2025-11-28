@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS payment_settings (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create trigger for updated_at
+-- Create trigger for updated_at (drop first if exists)
+DROP TRIGGER IF EXISTS update_payment_settings_updated_at ON payment_settings;
 CREATE TRIGGER update_payment_settings_updated_at 
     BEFORE UPDATE ON payment_settings
     FOR EACH ROW 
@@ -78,7 +79,14 @@ CREATE TABLE IF NOT EXISTS cart_history (
     converted_at TIMESTAMPTZ
 );
 
--- Indexes for cart history
+-- Indexes for cart history (drop first if exist)
+DROP INDEX IF EXISTS idx_cart_history_user;
+DROP INDEX IF EXISTS idx_cart_history_session;
+DROP INDEX IF EXISTS idx_cart_history_phone;
+DROP INDEX IF EXISTS idx_cart_history_action;
+DROP INDEX IF EXISTS idx_cart_history_created;
+DROP INDEX IF EXISTS idx_cart_history_abandoned;
+
 CREATE INDEX idx_cart_history_user ON cart_history(user_id);
 CREATE INDEX idx_cart_history_session ON cart_history(session_id);
 CREATE INDEX idx_cart_history_phone ON cart_history(phone);
@@ -194,7 +202,76 @@ CREATE TABLE IF NOT EXISTS whatsapp_config (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create trigger for updated_at
+-- Add missing columns if table already exists from previous run
+DO $$ 
+BEGIN
+    -- Add api_version if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'api_version'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN api_version VARCHAR(10) DEFAULT 'v18.0';
+    END IF;
+    
+    -- Add business_phone_number if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'business_phone_number'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN business_phone_number VARCHAR(20) NOT NULL DEFAULT '+919700653332';
+    END IF;
+    
+    -- Add admin_phone_number if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'admin_phone_number'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN admin_phone_number VARCHAR(20) NOT NULL DEFAULT '+919700653332';
+    END IF;
+    
+    -- Add silent_notifications if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'silent_notifications'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN silent_notifications BOOLEAN DEFAULT true;
+    END IF;
+    
+    -- Add enable_login_notifications if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'enable_login_notifications'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN enable_login_notifications BOOLEAN DEFAULT true;
+    END IF;
+    
+    -- Add enable_cart_notifications if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'enable_cart_notifications'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN enable_cart_notifications BOOLEAN DEFAULT true;
+    END IF;
+    
+    -- Add enable_order_notifications if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'enable_order_notifications'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN enable_order_notifications BOOLEAN DEFAULT true;
+    END IF;
+    
+    -- Add enable_payment_notifications if it doesn't exist
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'whatsapp_config' AND column_name = 'enable_payment_notifications'
+    ) THEN
+        ALTER TABLE whatsapp_config ADD COLUMN enable_payment_notifications BOOLEAN DEFAULT true;
+    END IF;
+END $$;
+
+-- Create trigger for updated_at (drop first if exists)
+DROP TRIGGER IF EXISTS update_whatsapp_config_updated_at ON whatsapp_config;
 CREATE TRIGGER update_whatsapp_config_updated_at 
     BEFORE UPDATE ON whatsapp_config
     FOR EACH ROW 
@@ -217,8 +294,8 @@ VALUES (
     'YOUR_PHONE_NUMBER_ID', 
     'YOUR_ACCESS_TOKEN', 
     'v18.0',
-    '+919876543210', 
-    '+919876543210',
+    '+919700653332', 
+    '+919700653332',
     true,
     true,
     true,
@@ -228,5 +305,38 @@ VALUES (
 ON CONFLICT DO NOTHING;
 
 COMMENT ON TABLE whatsapp_config IS 'WhatsApp Business API configuration for OTP and admin notifications';
+
+-- =====================================================
+-- Row Level Security (RLS) Policies
+-- =====================================================
+
+ALTER TABLE payment_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE whatsapp_config ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Admins can manage payment settings
+DROP POLICY IF EXISTS "Admins can manage payment_settings" ON payment_settings;
+CREATE POLICY "Admins can manage payment_settings"
+    ON payment_settings
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM users
+            WHERE users.id = auth.uid()
+            AND users.role = 'admin'
+        )
+    );
+
+-- Policy: Admins can manage WhatsApp config
+DROP POLICY IF EXISTS "Admins can manage whatsapp_config" ON whatsapp_config;
+CREATE POLICY "Admins can manage whatsapp_config"
+    ON whatsapp_config
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM users
+            WHERE users.id = auth.uid()
+            AND users.role = 'admin'
+        )
+    );
 
 SELECT 'Payment settings, cart history, and WhatsApp config tables created successfully!' as status;
